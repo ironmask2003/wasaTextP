@@ -631,7 +631,6 @@ components:
       properties:
         convid: { $ref: "#/components/schemas/Identification" }
         dest_user_id: { $ref: "#/components/schemas/Identification" }
-        messages: { $ref: "#/components/schemas/MessagesList" }
     GroupConv:
       title: Group conversation
       description: Conversation between members of a group
@@ -639,7 +638,6 @@ components:
       properties:
         convid: { $ref: "#/components/schemas/Identification" }
         grouopid: { $ref: "#/components/schemas/Identification" }
-        messages: { $ref: "#/components/schemas/MessagesList" }
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users
