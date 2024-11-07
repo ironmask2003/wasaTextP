@@ -341,7 +341,7 @@ paths:
         Return all the message of a conversation sorted by send time
       responses:
         "200":
-          description: Messages getted succesfully
+          description: Messages got succesfully
           content:
             application/json:
               schema: { $ref: "#/components/schemas/MessagesList" }
