@@ -602,7 +602,7 @@ components:
       example:
         text: "Hi"
         msgid: 1
-        send_time:
+        send_time: "2020-12-31T23:59:59"
     MsgPhoto:
       title: Message Photo
       description: rappresent a photo sended like a message
@@ -642,15 +642,21 @@ components:
         groupid: { $ref: "#/components/schemas/Identification" }
         users: { $ref: "#/components/schemas/ProfilesList" }
     PrivateConv:
+      title: Private conversation
+      description: Conversation between two users
       type: object
       properties:
         convid: { $ref: "#/components/schemas/Identification" }
         dest_user_id: { $ref: "#/components/schemas/Identification" }
+        messages: { $ref: "#/components/schemas/MessagesList" }
     GroupConv:
+      title: Group conversation
+      description: Conversation between members of a group
       type: object
       properties:
         convid: { $ref: "#/components/schemas/Identification" }
         grouopid: { $ref: "#/components/schemas/Identification" }
+        messages: { $ref: "#/components/schemas/MessagesList" }
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users
