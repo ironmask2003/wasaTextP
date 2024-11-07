@@ -84,6 +84,7 @@ paths:
               schema: { $ref: "#/components/schemas/ProfilesList" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   /users/{user}/username:
@@ -171,10 +172,10 @@ paths:
         required: true
       responses:
         "201":
-          description: Account created succesfully
+          description: Group created succesfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Identification" }
+              schema: { $ref: "#/components/schemas/Group" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
   /users/{user}/groups/partecipates/{group}:
@@ -303,7 +304,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation}:
+  /users/{user}/conversations/{conversation_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -327,28 +328,10 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Message
-  /users/{user}/conversations/{conversation}/messages:
+  /users/{user}/conversations/{conversation_id}/messages:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
-    get:
-      tags: [Message]
-      operationId: getMessages
-      security:
-        - bearerAuth: []
-      summary: List of the messages of a conversation
-      description: |
-        Return all the message of a conversation sorted by send time
-      responses:
-        "200":
-          description: Messages got succesfully
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/MessagesList" }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "403": { $ref: "#/components/responses/Forbidden" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
     post:
       tags: [Message]
       operationId: sendMessage
@@ -370,7 +353,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation}/messages/{message}:
+  /users/{user}/conversations/{conversation_id}/messages/{message}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -419,7 +402,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Comment
-  /users/{user}/conversations/{conversation}/comments:
+  /users/{user}/conversations/{conversation_id}/comments:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -450,7 +433,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation}/comments/{comment}:
+  /users/{user}/conversations/{conversation_id}/comments/{comment}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -488,7 +471,7 @@ components:
       description: The id of the group in which the user want to use operations
       schema: { $ref: "#/components/schemas/Identification" }
     conv:
-      name: conversation
+      name: conversation_id
       in: path
       required: true
       description: ID of the conversation with which the user wants to use operations
