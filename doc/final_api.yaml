@@ -641,17 +641,22 @@ components:
         groupimg: { $ref: "#/components/schemas/Photo" }
         groupid: { $ref: "#/components/schemas/Identification" }
         users: { $ref: "#/components/schemas/ProfilesList" }
+    PrivateConv:
+      type: object
+      properties:
+        convid: { $ref: "#/components/schemas/Identification" }
+        dest_user_id: { $ref: "#/components/schemas/Identification" }
+    GroupConv:
+      type: object
+      properties:
+        convid: { $ref: "#/components/schemas/Identification" }
+        grouopid: { $ref: "#/components/schemas/Identification" }
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users
-      type: object
-      properties:
-        users: { $ref: "#/components/schemas/ProfilesList" }
-        is_group:
-          type: boolean
-          description: Used to identificate if a conversation is from a group
-          example: true
-        convid: { $ref: "#/components/schemas/Identification" }
+      oneOf:
+        - $ref: "#/components/schemas/PrivateConv"
+        - $ref: "#/components/schemas/GroupConv"
     ConversationsList:
       title: List of conversation
       description: All conversation of a user
