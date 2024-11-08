@@ -286,6 +286,37 @@ paths:
   /users/{user}/conversations:
     parameters:
       - $ref: "#/components/parameters/user"
+    post:
+      tags: [Conversation]
+      operationId: postConversation
+      security:
+        - bearerAuth: []
+      description: |
+        Take the id of the user or group to open a conversation with
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { $ref: "#/components/schemas/Identification" }
+        required: true
+      responses:
+        "200":
+          description: Conversation opened
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Identification" }
+          links:
+            getConversationId:
+              operationId: getConversation
+              parameters:
+                convid: "$response.body#/convid"
+              description: Obtain details of the conversation specified with convid
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     get:
       tags: [Conversation]
       operationId: getMyConversations
@@ -546,7 +577,7 @@ components:
       description: List of profiles in a group, conversation or in the search operation
       type: object
       properties:
-        list:
+        profiles:
           type: array
           description: All profiles returned after a request like search
           items: { $ref: "#/components/schemas/Profile" }
@@ -554,7 +585,7 @@ components:
           minItems: 0
           maxItems: 100
       required:
-        - list
+        - profiles
     Text:
       title: Text
       description: Used to rappresent a text in a message or comment
@@ -569,10 +600,13 @@ components:
       type: object
       properties:
         text: { $ref: "#/components/schemas/Text" }
-        msgid: { $ref: "#/components/schemas/Identification" }
+        msg_commented_id: { $ref: "#/components/schemas/Identification" }
         commentid: { $ref: "#/components/schemas/Identification" }
         send_time: { $ref: "#/components/schemas/Timestamp" }
-        posted_user: { $ref: "#/components/schemas/Name" }
+      required:
+        - text
+        - commentid
+        - msg_commented_id
     MsgText:
       title: Message Text
       description: rappresent a message text
@@ -581,11 +615,9 @@ components:
         text: { $ref: "#/components/schemas/Text" }
         msgid: { $ref: "#/components/schemas/Identification" }
         send_time: { $ref: "#/components/schemas/Timestamp" }
-        send_user_id: { $ref: "#/components/schemas/Identification" }
-      example:
-        text: "Hi"
-        msgid: 1
-        send_time: "2020-12-31T23:59:59"
+      required:
+        - text
+        - msgid
     MsgPhoto:
       title: Message Photo
       description: rappresent a photo sended like a message
@@ -595,13 +627,16 @@ components:
         caption: { $ref: "#/components/schemas/Text" }
         msgid: { $ref: "#/components/schemas/Identification" }
         send_time: { $ref: "#/components/schemas/Timestamp" }
-        send_user_id: { $ref: "#/components/schemas/Identification" }
+      required:
+        - photo
+        - msgid
     Message:
       title: Message
       description: message sended from a user to another user ora a group
       oneOf:
         - $ref: "#/components/schemas/MsgPhoto"
         - $ref: "#/components/schemas/MsgText"
+        - $ref: "#/components/schemas/Comment"
     MessagesList:
       title: Messages List
       description: list of all message of a conversation
@@ -624,6 +659,9 @@ components:
         groupimg: { $ref: "#/components/schemas/Photo" }
         groupid: { $ref: "#/components/schemas/Identification" }
         users: { $ref: "#/components/schemas/ProfilesList" }
+      required:
+        - groupname
+        - groupid
     PrivateConv:
       title: Private conversation
       description: Conversation between two users
@@ -657,6 +695,7 @@ components:
           maxItems: 100
       required:
         - conversations
+    # Used for the Error responses (40x and 50x)
     Error:
       description: Object describe an error with the code and the message
       type: object
