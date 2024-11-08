@@ -87,10 +87,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /users/{user}/username:
+  /users/{user}:
     parameters:
       - $ref: "#/components/parameters/user"
-    put:
+    patch:
       tags: [User]
       operationId: setMyUserName
       security:
@@ -113,7 +113,7 @@ paths:
           description: The user name was set successfully
           content:
             plain/text:
-              schema: { $ref: "#/components/schemas/Completed" }
+              schema: { $ref: "#/components/schemas/Profile" }
               example: Username changed successfully
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
@@ -311,12 +311,13 @@ paths:
             getConversationId:
               operationId: getConversation
               parameters:
-                convid: "$response.body#/convid"
+                conversation_id: "$response.body#/conversation_id"
               description: Obtain details of the conversation specified with convid
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
+  /users/{users}/conversation:
     get:
       tags: [Conversation]
       operationId: getMyConversations
@@ -335,7 +336,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation_id}:
+  /users/{users}/conversation/{conversation_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
