@@ -185,7 +185,7 @@ paths:
     put:
       parameters:
         - name: user_to_add
-          in: path
+          in: query
           required: true
           description: User to add
           schema: { $ref: "#/components/schemas/Identification" }
@@ -469,7 +469,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
-      - $ref: "#/components/parameters/comment"
+      - $ref: "#/components/parameters/msg"
       - $ref: "#/components/parameters/react"
     delete:
       tags: [Comment]
