@@ -317,7 +317,6 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{users}/conversation:
     get:
       tags: [Conversation]
       operationId: getMyConversations
@@ -336,7 +335,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{users}/conversation/{conversation_id}:
+  /users/{user}/conversations/{conversation_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -374,7 +373,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Message" }
+            schema: { $ref: "#/components/schemas/SentMessage" }
       responses:
         "201":
           description: Message sended succesfully
@@ -631,13 +630,33 @@ components:
       required:
         - photo
         - msgid
+    SentMessage:
+      title: Sent message
+      description: message posted by a user to another user ora a group
+      type: object
+      properties:
+        body:
+          oneOf:
+            - $ref: "#/components/schemas/MsgPhoto"
+            - $ref: "#/components/schemas/MsgText"
+        status:
+          type: string
+          enum: [not_arrive, one_check, two_check]
+          example: one_check
+    RcvMessage:
+      title: Recived message
+      description: message recived by a user or a group
+      type: object
+      properties:
+        body:
+          oneOf:
+            - $ref: "#/components/schemas/MsgPhoto"
+            - $ref: "#/components/schemas/MsgText"
+        sender_name: { $ref: "#/components/schemas/Name" }
     Message:
-      title: Message
-      description: message sended from a user to another user ora a group
       oneOf:
-        - $ref: "#/components/schemas/MsgPhoto"
-        - $ref: "#/components/schemas/MsgText"
-        - $ref: "#/components/schemas/Comment"
+        - $ref: "#/components/schemas/SentMessage"
+        - $ref: "#/components/schemas/RcvMessage"
     MessagesList:
       title: Messages List
       description: list of all message of a conversation
