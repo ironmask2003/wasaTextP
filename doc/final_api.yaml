@@ -630,15 +630,16 @@ components:
       required:
         - photo
         - msgid
+    BodyMessage:
+      oneOf:
+        - $ref: "#/components/schemas/MsgPhoto"
+        - $ref: "#/components/schemas/MsgText"
     SentMessage:
       title: Sent message
       description: message posted by a user to another user ora a group
       type: object
       properties:
-        body:
-          oneOf:
-            - $ref: "#/components/schemas/MsgPhoto"
-            - $ref: "#/components/schemas/MsgText"
+        body: { $ref: "#/components/schemas/BodyMessage" }
         status:
           type: string
           enum: [not_arrive, one_check, two_check]
@@ -648,10 +649,7 @@ components:
       description: message recived by a user or a group
       type: object
       properties:
-        body:
-          oneOf:
-            - $ref: "#/components/schemas/MsgPhoto"
-            - $ref: "#/components/schemas/MsgText"
+        body: { $ref: "#/components/schemas/BodyMessage" }
         sender_name: { $ref: "#/components/schemas/Name" }
     Message:
       oneOf:
