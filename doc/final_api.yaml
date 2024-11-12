@@ -149,7 +149,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
 
   # Tag Group
-  /users/{user}/groups/created:
+  /users/{user}/groups:
     parameters:
       - $ref: "#/components/parameters/user"
     post:
@@ -178,11 +178,17 @@ paths:
               schema: { $ref: "#/components/schemas/Group" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/groups/partecipates/{group}:
+  /users/{user}/groups/{group}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"
     put:
+      parameters:
+        - name: user_to_add
+          in: path
+          required: true
+          description: User to add
+          schema: { $ref: "#/components/schemas/Identification" }
       tags: [Group]
       operationId: addToGroup
       security:
@@ -433,49 +439,45 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Comment
-  /users/{user}/conversations/{conversation_id}/comments:
+  /users/{user}/conversations/{conversation_id}/messages/{message}/reactions:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
+      - $ref: "#/components/parameters/msg"
     post:
-      parameters:
-        - name: id_msg
-          description: ID of the message to be commented on
-          in: query
-          required: true
-          schema: { $ref: "#/components/schemas/Identification" }
       tags: [Comment]
       operationId: commentMessage
       security:
         - bearerAuth: []
       summary: Comment a message
-      description: Comment the message passed in the query
+      description: Comment the message in the path
       requestBody:
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/Comment" }
+            schema: { $ref: "#/components/schemas/Reaction" }
       responses:
         "201":
           description: Message commented succesfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Comment" }
+              schema: { $ref: "#/components/schemas/Reaction" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation_id}/comments/{comment}:
+  /users/{user}/conversations/{conversation_id}/messages/{message}/reactions/{reaction}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
       - $ref: "#/components/parameters/comment"
+      - $ref: "#/components/parameters/react"
     delete:
       tags: [Comment]
       operationId: uncommentMessage
       security:
         - bearerAuth: []
       summary: Uncomment message
-      description: Delete the message
+      description: Delete the comment
       responses:
         "200":
           description: The comment was deleted succesfully
@@ -513,8 +515,8 @@ components:
       required: true
       description: ID of the message with which the user wants to use operations
       schema: { $ref: "#/components/schemas/Identification" }
-    comment:
-      name: comment
+    react:
+      name: reaction
       in: path
       required: true
       description: ID of the comment of a message
@@ -594,19 +596,16 @@ components:
       example: "Hi!"
       minLength: 1
       maxLength: 100
-    Comment:
-      title: Comment
-      description: Comment of a message
+    Reaction:
+      title: Reaction
+      description: Reaction of a message
       type: object
       properties:
-        text: { $ref: "#/components/schemas/Text" }
-        msg_commented_id: { $ref: "#/components/schemas/Identification" }
-        commentid: { $ref: "#/components/schemas/Identification" }
-        send_time: { $ref: "#/components/schemas/Timestamp" }
-      required:
-        - text
-        - commentid
-        - msg_commented_id
+        id_react: { $ref: "#/components/schemas/Identification" }
+        emoticon:
+          type: string
+          description: emoticon
+          example: "🐱"
     MsgText:
       title: Message Text
       description: rappresent a message text
