@@ -696,9 +696,13 @@ components:
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users
-      oneOf:
-        - $ref: "#/components/schemas/PrivateConv"
-        - $ref: "#/components/schemas/GroupConv"
+      type: object
+      properties:
+        body:
+          oneOf:
+            - $ref: "#/components/schemas/PrivateConv"
+            - $ref: "#/components/schemas/GroupConv"
+        last_msg: { $ref: "#/components/schemas/Message" }
     ConversationsList:
       title: List of conversation
       description: All conversation of a user
