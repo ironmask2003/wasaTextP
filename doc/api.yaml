@@ -87,10 +87,10 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /users/{user}:
+  /users/{user}/username:
     parameters:
       - $ref: "#/components/parameters/user"
-    patch:
+    put:
       tags: [User]
       operationId: setMyUserName
       security:
@@ -298,6 +298,7 @@ paths:
       operationId: postConversation
       security:
         - bearerAuth: []
+      summary: Create conversation
       description: |
         Take the id of the user or group to open a conversation with
       requestBody:
@@ -305,6 +306,7 @@ paths:
           application/json:
             schema:
               type: object
+              description: ID of the group or user to send a message
               properties:
                 # Take the id of a group or user to send a message
                 id: { $ref: "#/components/schemas/Identification" }
@@ -338,7 +340,7 @@ paths:
           description: Succesfully getted conversations
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/ConversationsList" }
+              schema: { $ref: "#/components/schemas/ConversationCollection" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
@@ -644,6 +646,7 @@ components:
       properties:
         body: { $ref: "#/components/schemas/BodyMessage" }
         status:
+          description: Define the status of a message
           type: string
           enum: [not_arrive, one_check, two_check]
           example: one_check
@@ -710,7 +713,7 @@ components:
             - $ref: "#/components/schemas/PrivateConv"
             - $ref: "#/components/schemas/GroupConv"
         last_msg: { $ref: "#/components/schemas/Message" }
-    ConversationsList:
+    ConversationCollection:
       title: List of conversation
       description: All conversation of a user
       type: object
