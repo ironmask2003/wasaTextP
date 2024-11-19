@@ -293,7 +293,7 @@ paths:
   /users/{user}/conversations:
     parameters:
       - $ref: "#/components/parameters/user"
-    post:
+    put:
       tags: [Conversation]
       operationId: postConversation
       security:
