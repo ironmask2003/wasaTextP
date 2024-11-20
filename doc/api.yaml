@@ -374,6 +374,12 @@ paths:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
     post:
+      parameters:
+        - name: messaggio
+          description: messaggio da rispondere
+          in: query
+          required: false
+          schema: { $ref: "#/components/schemas/Identification" }
       tags: [Message]
       operationId: sendMessage
       security:
