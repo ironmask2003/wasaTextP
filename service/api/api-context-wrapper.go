@@ -21,6 +21,18 @@ func (rt *_router) wrap(fn httpRouterHandler, auth bool) func(http.ResponseWrite
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		userID := 0
+		if auth {
+			// Check if the user is authorized
+			userID = isAuthorized(r.Header)
+
+			if userID == 0 {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+		}
+
 		var ctx = reqcontext.RequestContext{
 			ReqUUID: reqUUID,
 		}
