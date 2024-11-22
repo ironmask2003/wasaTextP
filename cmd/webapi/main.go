@@ -36,9 +36,9 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"wasatext.project/service/api"
-	"wasatext.project/service/database"
-	"wasatext.project/service/globaltime"
+	"wasa.project/service/api"
+	"wasa.project/service/database"
+	"wasa.project/service/globaltime"
 )
 
 // main is the program entry point. The only purpose of this function is to call run() and set the exit code if there is
