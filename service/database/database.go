@@ -31,6 +31,7 @@ Then you can initialize the AppDatabase and pass it to the api package.
 package database
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -38,36 +39,80 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
+
+	// -- USER OPERATION -- //
+
+	// Creation of new user in the user table
+	CreateUser(u User) (User, error)
+
+	// Change the username of the user
+	SetMyUsername(UserId int, newUsername string) error
+
+	// Delete a user in the user table
+	DeleteUser(UserId int) error
 
 	Ping() error
 }
 
 type appdbimpl struct {
-	c *sql.DB
+	c   *sql.DB
+	ctx context.Context
 }
 
 // New returns a new instance of AppDatabase based on the SQLite connection `db`.
 // `db` is required - an error will be returned if `db` is `nil`.
 func New(db *sql.DB) (AppDatabase, error) {
+
+	// Check if the database is nil (required)
 	if db == nil {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
 
-	// Check if table exists. If not, the database is empty, and we need to create the structure
-	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
-	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
-		_, err = db.Exec(sqlStmt)
+	/// Check if the database is empty
+	var tableSQL uint8
+	err := db.QueryRow("SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='user';").Scan(&tableSQL)
+	if err != nil {
+		return nil, fmt.Errorf("error checking if database is empty: %w", err)
+	}
+
+	// Check of the number of table is corret (there are 5 tables)
+	// if the number of table is not 5, we creating missing tables
+	if tableSQL != 5 {
+
+		// Craetion of the user tabel
+		_, err = db.Exec(userTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure: %w", err)
+		}
+
+		// Creation of the message table
+		_, err = db.Exec(messageTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure: %w", err)
+		}
+
+		// Creation of the group table
+		_, err = db.Exec(groupTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure: %w", err)
+		}
+
+		// Creation of the user_group table
+		_, err = db.Exec(userGroupTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure: %w", err)
+		}
+
+		// Creation of the conversation table
+		_, err = db.Exec(conversationTableSQL)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
 	}
 
 	return &appdbimpl{
-		c: db,
+		c:   db,
+		ctx: context.Background(),
 	}, nil
 }
 

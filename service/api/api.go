@@ -41,7 +41,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"wasatext.project/service/database"
+	"wasa.project/service/database"
 )
 
 // Config is used to provide dependencies and configuration to the New function.

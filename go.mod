@@ -1,6 +1,6 @@
-module wasatext.project
+module wasa.project
 
-go 1.23.3
+go 1.17
 
 require (
 	github.com/ardanlabs/conf v1.5.0
