@@ -51,6 +51,12 @@ type AppDatabase interface {
 	// Delete a user in the user table
 	DeleteUser(UserId int) error
 
+	// Check if the username is alredy used
+	CheckIfExist(username string) (bool, error)
+
+	// Get User information from the db with the username
+	GetUserByName(username string) (User, error)
+
 	Ping() error
 }
 

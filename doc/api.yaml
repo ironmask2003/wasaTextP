@@ -294,34 +294,6 @@ paths:
   /users/{user}/conversations:
     parameters:
       - $ref: "#/components/parameters/user"
-    put:
-      tags: [Conversation]
-      operationId: postConversation
-      security:
-        - bearerAuth: []
-      summary: Create conversation
-      description: |
-        Take the id of the user or group to open a conversation with
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              description: ID of the group or user to send a message
-              properties:
-                # Take the id of a group or user to send a message
-                id: { $ref: "#/components/schemas/Identification" }
-        required: true
-      responses:
-        "200":
-          description: Conversation opened
-          content:
-            application/json:
-              schema: { $ref: "#/components/schemas/Conversation" }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "404": { $ref: "#/components/responses/NotFound" }
-        "500": { $ref: "#/components/responses/InternalServerError" }
     get:
       tags: [Conversation]
       operationId: getMyConversations
@@ -340,10 +312,29 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation_id}:
+  /users/{user}/conversations/{dest_user_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
+    put:
+      tags: [Conversation]
+      operationId: putConversation
+      security:
+        - bearerAuth: []
+      summary: Create conversation
+      description: |
+        Take the id of the user or group to open a conversation with
+        required: true
+      responses:
+        "200":
+          description: Conversation opened
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Conversation" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
     get:
       tags: [Conversation]
       operationId: getConversation
@@ -364,7 +355,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Message
-  /users/{user}/conversations/{conversation_id}/messages:
+  /users/{user}/conversations/{dest_user_id}/messages:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -395,7 +386,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation_id}/messages/{message}:
+  /users/{user}/conversations/{dest_user_id}/messages/{message}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -444,7 +435,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Comment
-  /users/{user}/conversations/{conversation_id}/messages/{message}/reactions:
+  /users/{user}/conversations/{dest_user_id}/messages/{message}/reactions:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -470,7 +461,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{conversation_id}/messages/{message}/reactions/{reaction}:
+  /users/{user}/conversations/{dest_user_id}/messages/{message}/reactions/{reaction}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -509,10 +500,10 @@ components:
       description: The id of the group in which the user want to use operations
       schema: { $ref: "#/components/schemas/Identification" }
     conv:
-      name: conversation_id
+      name: dest_user_id
       in: path
       required: true
-      description: ID of the conversation with which the user wants to use operations
+      description: ID dell'utente o del gruppo con cui aprire la conversazione
       schema: { $ref: "#/components/schemas/Identification" }
     msg:
       name: message
@@ -680,29 +671,12 @@ components:
         - groupname
         - groupid
         - users
-    PrivateConv:
-      title: Private conversation
-      description: Conversation between two users
-      type: object
-      properties:
-        convid: { $ref: "#/components/schemas/Identification" }
-        dest_user_id: { $ref: "#/components/schemas/Identification" }
-    GroupConv:
-      title: Group conversation
-      description: Conversation between members of a group
-      type: object
-      properties:
-        convid: { $ref: "#/components/schemas/Identification" }
-        grouopid: { $ref: "#/components/schemas/Identification" }
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users
       type: object
       properties:
-        body:
-          oneOf:
-            - $ref: "#/components/schemas/PrivateConv"
-            - $ref: "#/components/schemas/GroupConv"
+        conv_id: { $ref: "#/components/schemas/Identification" }
         last_msg: { $ref: "#/components/schemas/Message" }
     ConversationCollection:
       title: List of conversation
