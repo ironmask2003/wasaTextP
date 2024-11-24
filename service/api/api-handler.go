@@ -13,6 +13,9 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Set my UserName -- //
 	rt.router.PUT("/session/:user/username", rt.wrap(rt.setMyUserName, true))
+	//
+	// -- Set my Photo -- //
+	rt.router.PUT("/session/:user/photo", rt.wrap(rt.setMyPhoto, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
