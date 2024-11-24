@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"wasa.project/service/api/functions"
+	"wasa.project/service/api/imageFunctions"
 )
 
 // Query for add a new user in the user table
@@ -33,13 +33,13 @@ func (db *appdbimpl) CreateUser(u User) (User, error) {
 	}
 
 	// Set default photo profile
-	source, err := os.Open("./storage/default_propic.jpg") // Open the img file
+	source, err := os.Open("./storage/default_profile_photo.jpg") // Open the img file
 	if err != nil {
 		return user, err
 	}
 	defer source.Close()
 
-	destination, err := os.Create(functions.SetDefaultPhoto(user.UserId)) // Create the path where the photo will be saved
+	destination, err := os.Create(imageFunctions.SetDefaultPhoto(user.UserId)) // Create the path where the photo will be saved
 	if err != nil {
 		return user, err
 	}

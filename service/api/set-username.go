@@ -42,8 +42,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(user); err != nil {
-		ctx.Logger.WithError(err).Error("can't encode the response")
-		w.WriteHeader(http.StatusInternalServerError)
+		InternalServerError(w, err, ctx)
 		return
 	}
 }

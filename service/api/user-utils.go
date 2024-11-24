@@ -2,6 +2,7 @@ package api
 
 import (
 	"regexp"
+	"wasa.project/service/api/imageFunctions"
 	"wasa.project/service/database"
 )
 
@@ -31,5 +32,10 @@ func (u *User) ConvertUserForDB() database.User {
 func (u *User) ConvertUserFromDB(user database.User) error {
 	u.UserId = user.UserId
 	u.Username = user.Username
+	profilePhoto, err := imageFunctions.ImageToBase64(imageFunctions.SetDefaultPhoto(user.UserId))
+	if err != nil {
+		return err
+	}
+	u.Photo = profilePhoto
 	return nil
 }
