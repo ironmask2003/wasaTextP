@@ -11,5 +11,9 @@ func InternalServerError(w http.ResponseWriter, err error, ctx reqcontext.Reques
 }
 
 func BadRequest(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
-	http.Error(w, "message: "+err.Error(), http.StatusBadRequest)
+	http.Error(w, message+": "+err.Error(), http.StatusBadRequest)
+}
+
+func Forbidden(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
+	http.Error(w, message+": "+err.Error(), http.StatusForbidden)
 }

@@ -25,6 +25,7 @@ func (rt *_router) CreateUser(u User) (User, error) {
 	return u, nil
 }
 
+// Main function used for the login/registrasion
 func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	var user User
 

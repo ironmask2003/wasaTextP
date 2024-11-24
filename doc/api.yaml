@@ -114,7 +114,7 @@ paths:
         "200":
           description: The user name was set successfully
           content:
-            plain/text:
+            application/json:
               schema: { $ref: "#/components/schemas/Profile" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }

@@ -11,6 +11,7 @@ type User struct {
 	Photo    string `json:"photo"`
 }
 
+// Check if the userName respect the regex
 func (u *User) IsValid() bool {
 	validUser := regexp.MustCompile(`^[a-z][a-z0-9]{2,13}$`)
 	return validUser.MatchString(u.Username)
