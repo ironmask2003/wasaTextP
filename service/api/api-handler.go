@@ -12,7 +12,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session", rt.wrap(rt.doLogin, false))
 	//
 	// -- Set my UserName -- //
-	rt.router.PUT("/session/:user/username", rt.wrap(rt.SetMyUserName, true))
+	rt.router.PUT("/session/:user/username", rt.wrap(rt.setMyUserName, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

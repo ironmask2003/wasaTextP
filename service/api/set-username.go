@@ -9,7 +9,7 @@ import (
 	"wasa.project/service/api/reqcontext"
 )
 
-func (rt *_router) SetMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Get the userID from the URL
 	profileUserID, err := strconv.Atoi(ps.ByName("user"))
 	if err != nil {
