@@ -5,6 +5,7 @@ import (
 	"errors"
 )
 
+// Function used to take the last element of a table
 func (db *appdbimpl) GetLastElem(query string) (int, error) {
 	var _maxID = sql.NullInt64{Int64: 0, Valid: false}
 	row, err := db.c.Query(query)
