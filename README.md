@@ -13,6 +13,7 @@ Dopo aver eseguito il comando entrare nei file .go all'interno delle varie carte
 - ./service/api 
 - ./service/database
 - ./cmd
+
 e cambiare il modulo principale da git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated al nome scelto nel comando 
 precedente. Se si trova nei file il modulo + path (esempio: git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api) bisogna cambiare solo la parte iniziale prima del path (Nell'esempio avrete nome_modulo/service/api).
 
