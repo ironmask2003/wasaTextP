@@ -325,6 +325,11 @@ paths:
       description: |
         Take the id of the user or group to open a conversation with
         required: true
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/Message" }
+        required: false
       responses:
         "200":
           description: Conversation opened

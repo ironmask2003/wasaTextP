@@ -11,9 +11,17 @@ func InternalServerError(w http.ResponseWriter, err error, ctx reqcontext.Reques
 }
 
 func BadRequest(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
-	http.Error(w, message+": "+err.Error(), http.StatusBadRequest)
+	if err != nil {
+		http.Error(w, message+": "+err.Error(), http.StatusBadRequest)
+	} else {
+		http.Error(w, message, http.StatusBadRequest)
+	}
 }
 
 func Forbidden(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
-	http.Error(w, message+": "+err.Error(), http.StatusForbidden)
+	if err != nil {
+		http.Error(w, message+": "+err.Error(), http.StatusForbidden)
+	} else {
+		http.Error(w, message, http.StatusForbidden)
+	}
 }
