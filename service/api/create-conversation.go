@@ -6,7 +6,22 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
+	"wasa.project/service/database"
 )
+
+// Used for create the conversation in the db if his dosen't exist
+func (rt *_router) CreateConversationDB(c Conversation) (Conversation, error) {
+	// Create the user in the db
+	dbConversation, err := rt.db.CreateConversation(c.ConvertConversationForDB(), database.Message{})
+	if err != nil {
+		return c, err
+	}
+
+	// Convert the user from the db to the user used in the api
+	c.ConvertConversationFromDB(dbConversation)
+
+	return c, nil
+}
 
 // Function used to check if the rcv is a user
 func (rt *_router) CheckIfRcvUser(rcv int) (User, error) {
@@ -60,11 +75,38 @@ func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps
 	// Check if the receiver is different from the user
 	if user_id == receiver {
 		BadRequest(w, nil, ctx, "Bad request")
+		return
 	}
 
 	// Check if the receiver is a user or a group
+	if user, err := rt.CheckIfRcvUser(receiver); err == nil {
+		// Check if the conversation exist
+		exist, err := rt.db.CheckIfExistConversationWithUser(user_id, user.UserId)
+		if err != nil {
+			InternalServerError(w, err, ctx)
+			return
+		}
 
-	// Check if the conversation exist
+		if !exist {
+			// Prendere il messagio dalla request body
+
+			// Creare la conversazione
+		}
+	} else if group, err := rt.CheckIfRcvGroup(receiver); err == nil {
+		// Check if the conversation exist
+		exist, err := rt.db.CheckIfExistConversationWithGroup(user_id, group.GroupId)
+		if err != nil {
+			InternalServerError(w, err, ctx)
+			return
+		}
+
+		if !exist {
+			// Creare la conversazione senza messaggio
+		}
+	} else {
+		BadRequest(w, nil, ctx, "Bad Request")
+		return
+	}
 
 	return
 }

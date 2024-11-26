@@ -30,12 +30,3 @@ func (db *appdbimpl) CheckIfExistConversationWithGroup(userId int, groupId int) 
 	// If exist the function return true (existName != "")
 	return existsConversation != "", err
 }
-
-// Main function
-func (db *appdbimpl) CheckIfExistConversation(userId int, groupId int, senderUsedId int) (bool, error) {
-	if senderUsedId == 0 {
-		return db.CheckIfExistConversationWithGroup(userId, groupId)
-	} else {
-		return db.CheckIfExistConversationWithUser(userId, senderUsedId)
-	}
-}

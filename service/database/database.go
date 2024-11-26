@@ -76,9 +76,6 @@ type AppDatabase interface {
 	// Check if a Conversation with a group exist
 	CheckIfExistConversationWithGroup(userId int, groupId int) (bool, error)
 
-	// Main function for check if a conversation exist
-	CheckIfExistConversation(userId int, groupId int, senderUsedId int) (bool, error)
-
 	Ping() error
 }
 
