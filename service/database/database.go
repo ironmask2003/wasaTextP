@@ -57,6 +57,28 @@ type AppDatabase interface {
 	// Get User information from the db with the username
 	GetUserByName(username string) (User, error)
 
+	// Get User information from the db with the id
+	GetUserById(userId int) (User, error)
+
+	// -- Group Operation -- //
+
+	// Get Groiup information from the db with the id
+	GetGroupById(groupId int) (Group, error)
+
+	// -- Conversation Operation -- //
+
+	// Create Conversation
+	CreateConversation(conv Conversation, m Message) (Conversation, error)
+
+	// Check if a Conversation with a user exist
+	CheckIfExistConversationWithUser(userId int, senderUsedId int) (bool, error)
+
+	// Check if a Conversation with a group exist
+	CheckIfExistConversationWithGroup(userId int, groupId int) (bool, error)
+
+	// Main function for check if a conversation exist
+	CheckIfExistConversation(userId int, groupId int, senderUsedId int) (bool, error)
+
 	Ping() error
 }
 
