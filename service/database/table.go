@@ -27,7 +27,8 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
 	SendTime DATETIME DEFAULT CURRENT_TIMESTAMP,
 	Status STRING,
 	SendUserID INTEGER NOT NULL,
-	PRIMARY KEY(MessageId, SendUserID),
+  ConversationId INTEGER NOT NULL
+	PRIMARY KEY(MessageId, SendUserID, ConversationId),
 	CONSTAINT fk_message
 		FOREIGN KEY (SendUserID) REFERENCES user(UserId)
 		ON DELTE CASCADE
@@ -64,10 +65,11 @@ var userGroupTableSQL = `CREATE TABLE IF NOT EXISTS user_group (
  */
 var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
 	ConversationId INTEGER NOT NULL UNIQUE,
-	GroupId INTEGER UNIQUE,
-	UserID INTEGER UNIQUE,
+	UserId INTEGER UNIQUE NOT NULL,
+  GroupId INTEGER UNIQUE,
+	SenderUserId INTEGER UNIQUE,
 	LastMessageId INTEGER,
-	PRIMARY KEY(ConversationId),
+	PRIMARY KEY(ConversationId, UserId),
 	CONSTRAINT fk_conversation
 		FOREIGN KEY (GroupId) REFERENCES group(GroupId)
 		ON DELETE CASCADE

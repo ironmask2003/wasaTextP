@@ -27,6 +27,7 @@ type Group struct {
 // -- Structs for the Conversation -- //
 type Conversation struct {
 	ConversationId int `json:"conversationId"`
+	SenderUserId   int `json:"senderUserId"`
 	GroupId        int `json:"groupId"`
 	UserId         int `json:"userId"`
 	LastMessageId  int `json:"lastMessageId"`

@@ -1,6 +1,8 @@
 package database
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -13,12 +15,41 @@ var queryAddUser = "INSERT INTO user (UserId, Username) VALUES (?, ?);"
 // Query for take the max id in the user table
 var queryMaxUserID = "SELECT MAX(UserId) FROM user"
 
+// Function used to take the last element of a user
+func GetLastElem(db *appdbimpl) (int, error) {
+	var _maxID = sql.NullInt64{Int64: 0, Valid: false}
+	row, err := db.c.Query(queryMaxUserID)
+	if err != nil {
+		return 0, err
+	}
+
+	var maxID int
+	for row.Next() {
+		if row.Err() != nil {
+			return 0, err
+		}
+
+		err = row.Scan(&_maxID)
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return 0, err
+		}
+
+		if !_maxID.Valid {
+			maxID = 0
+		} else {
+			maxID = int(_maxID.Int64)
+		}
+	}
+
+	return maxID, nil
+}
+
 func (db *appdbimpl) CreateUser(u User) (User, error) {
 	var user User
 	user.Username = u.Username
 
 	// Getting the max id in the user table
-	maxID, err := db.GetLastElem(queryMaxUserID)
+	maxID, err := GetLastElem(db)
 	if err != nil {
 		return user, err
 	}
