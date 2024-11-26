@@ -52,6 +52,8 @@ func (rt *_router) CheckIfRcvGroup(rcv int) (Group, error) {
 }
 
 func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	// Se nella request body non c'e un messaggio allora l'id del receiver sarà di un gruppo
+
 	// Get the id of the user who want to create a conversation
 	user_id, err := strconv.Atoi(ps.ByName("user"))
 	if err != nil {
