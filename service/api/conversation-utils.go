@@ -6,6 +6,7 @@ import (
 
 type Conversation struct {
 	ConversationId int `json:"conversationId"`
+	UserId         int `json:"userId"`
 	SenderUserId   int `json:"senderUserId"`
 	GroupId        int `json:"groupId"`
 	LastMessageId  int `json:"lasrMessageId"`
@@ -15,6 +16,7 @@ type Conversation struct {
 func (c *Conversation) ConvertConversationForDB() database.Conversation {
 	return database.Conversation{
 		ConversationId: c.ConversationId,
+		UserId:         c.UserId,
 		SenderUserId:   c.SenderUserId,
 		GroupId:        c.GroupId,
 		LastMessageId:  c.LastMessageId,
@@ -24,6 +26,7 @@ func (c *Conversation) ConvertConversationForDB() database.Conversation {
 // Function used to convert the Conversation struct used in the database package in the Conversation struct used in the api package
 func (c *Conversation) ConvertConversationFromDB(conversation database.Conversation) {
 	c.ConversationId = conversation.ConversationId
+	c.UserId = conversation.UserId
 	c.SenderUserId = conversation.SenderUserId
 	c.GroupId = conversation.GroupId
 	c.LastMessageId = conversation.LastMessageId

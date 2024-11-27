@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -9,17 +10,26 @@ import (
 	"wasa.project/service/database"
 )
 
+// -- Da sistemare -- //
+
 // Used for create the conversation in the db if his dosen't exist
-func (rt *_router) CreateConversationDB(c Conversation) (Conversation, error) {
-	// Create the user in the db
-	dbConversation, err := rt.db.CreateConversation(c.ConvertConversationForDB(), database.Message{})
-	if err != nil {
-		return c, err
+func (rt *_router) CreateConversationDB(c Conversation, m Message) (Conversation, error) {
+	if m.MessageId == 0 {
+		// Create the user in the db
+		dbConversation, err := rt.db.CreateConversation(c.ConvertConversationForDB(), database.Message{})
+		if err != nil {
+			return c, err
+		}
+		// Convert the user from the db to the user used in the api
+		c.ConvertConversationFromDB(dbConversation)
+	} else {
+		dbConversation, err := rt.db.CreateConversation(c.ConvertConversationForDB(), m.ConvertMessageForDB())
+		if err != nil {
+			return c, err
+		}
+		// Convert the user from the db to the user used in the api
+		c.ConvertConversationFromDB(dbConversation)
 	}
-
-	// Convert the user from the db to the user used in the api
-	c.ConvertConversationFromDB(dbConversation)
-
 	return c, nil
 }
 
@@ -53,6 +63,8 @@ func (rt *_router) CheckIfRcvGroup(rcv int) (Group, error) {
 
 func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Se nella request body non c'e un messaggio allora l'id del receiver sarà di un gruppo
+	var m Message
+	err_m := json.NewDecoder(r.Body).Decode(&m)
 
 	// Get the id of the user who want to create a conversation
 	user_id, err := strconv.Atoi(ps.ByName("user"))
@@ -80,6 +92,9 @@ func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps
 		return
 	}
 
+	// Conversation to return
+	var conv Conversation
+
 	// Check if the receiver is a user or a group
 	if user, err := rt.CheckIfRcvUser(receiver); err == nil {
 		// Check if the conversation exist
@@ -90,9 +105,17 @@ func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps
 		}
 
 		if !exist {
-			// Prendere il messagio dalla request body
+			if err_m != nil {
+				BadRequest(w, err_m, ctx, "Bad request")
+			}
 
-			// Creare la conversazione
+			// Create the conversation
+			conv, err = rt.CreateConversationDB(Conversation{UserId: user_id, SenderUserId: receiver}, m)
+
+			if err != nil {
+				InternalServerError(w, err, ctx)
+				return
+			}
 		}
 	} else if group, err := rt.CheckIfRcvGroup(receiver); err == nil {
 		// Check if the conversation exist
@@ -104,9 +127,23 @@ func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps
 
 		if !exist {
 			// Creare la conversazione senza messaggio
+			conv, err = rt.CreateConversationDB(Conversation{UserId: user_id, GroupId: group.GroupId}, Message{})
+
+			if err != nil {
+				InternalServerError(w, err, ctx)
+				return
+			}
 		}
 	} else {
 		BadRequest(w, nil, ctx, "Bad Request")
+		return
+	}
+
+	// Response
+	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("content-type", "application/json")
+	if err := json.NewEncoder(w).Encode(conv); err != nil {
+		InternalServerError(w, err, ctx)
 		return
 	}
 

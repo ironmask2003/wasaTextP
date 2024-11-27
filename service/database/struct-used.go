@@ -13,7 +13,6 @@ type Message struct {
 	MessageId    int       `json:"messageId"`
 	Text         string    `json:"text"`
 	SendTime     time.Time `json:"sendTime"`
-	Photo        string    `json:"photo"`
 	Status       string    `json:"status"`
 	SenderUserId int       `json:"senderUserId"`
 }
