@@ -12,10 +12,15 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session", rt.wrap(rt.doLogin, false))
 	//
 	// -- Set my UserName -- //
-	rt.router.PUT("/session/:user/username", rt.wrap(rt.setMyUserName, true))
+	rt.router.PUT("/profiles/:user/username", rt.wrap(rt.setMyUserName, true))
 	//
 	// -- Set my Photo -- //
-	rt.router.PUT("/session/:user/photo", rt.wrap(rt.setMyPhoto, true))
+	rt.router.PUT("/profiles/:user/photo", rt.wrap(rt.setMyPhoto, true))
+
+	// Conversation routes
+	//
+	// -- Create Conversation -- //
+	rt.router.PUT("/profiles/:user/conversations/:dest_user_id", rt.wrap(rt.CreateConversation, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

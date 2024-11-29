@@ -10,11 +10,12 @@ type User struct {
 
 // -- Structs for the message -- //
 type Message struct {
-	MessageId    int       `json:"messageId"`
-	Text         string    `json:"text"`
-	SendTime     time.Time `json:"sendTime"`
-	Status       string    `json:"status"`
-	SenderUserId int       `json:"senderUserId"`
+	MessageId      int       `json:"messageId"`
+	Text           string    `json:"text"`
+	SendTime       time.Time `json:"sendTime"`
+	Status         string    `json:"status"`
+	SenderUserId   int       `json:"senderUserId"`
+	ConversationId int       `json:"conversationId"`
 }
 
 // -- Structs for the group -- //

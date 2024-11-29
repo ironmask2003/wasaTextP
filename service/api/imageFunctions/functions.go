@@ -11,7 +11,7 @@ import (
 
 // Function return the path of the user photo profile
 func SetDefaultPhoto(userId int) string {
-	return fmt.Sprintf("./storage/%d/user_photo.png", userId)
+	return fmt.Sprintf("./storage/%d/user_photo.jpg", userId)
 }
 
 // Function convert an image in base64

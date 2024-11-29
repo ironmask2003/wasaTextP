@@ -1,0 +1,7 @@
+# DO LOGIN #
+POST http://localhost:3000/session HTTP/1.1
+content-type: application/json
+
+{
+    "username": "lokki"
+}

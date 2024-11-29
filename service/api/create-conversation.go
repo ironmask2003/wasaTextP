@@ -10,8 +10,6 @@ import (
 	"wasa.project/service/database"
 )
 
-// -- Da sistemare -- //
-
 // Used for create the conversation in the db if his dosen't exist
 func (rt *_router) CreateConversationDB(c Conversation, m Message) (Conversation, error) {
 	if m.MessageId == 0 {
@@ -135,7 +133,7 @@ func (rt *_router) CreateConversation(w http.ResponseWriter, r *http.Request, ps
 			}
 		}
 	} else {
-		BadRequest(w, nil, ctx, "Bad Request")
+		BadRequest(w, err, ctx, "Bad Request")
 		return
 	}
 

@@ -32,13 +32,22 @@ git push
 
 Se chiede l'accesso, mettere username e come password mettete un token generato da github. Per generare il token andate su github, cliccate sulla vostra immagine in alto a destra, cliccate su settings, andate su Developer settings, cliccate su personal access tokens, token classi, generate token classic, mettere un nome al token, selezionare tutte le caselle e generare il token, copiare il token e segnarsi il token da qualche parte. (Tranne nella chat con un utente in quanto per aprire una conversazione con un altro utente bisogna mandare un messaggio)
 
-## Create Conversation 
+## Test API con REST API CLIENT (Estensione VS CODE)
 
-Table conversazione, ha l'user id (utente che ha creato la conversazione con un altro utente, oppure, è stato appena aggiunto l'utente al gruppo), se è la chat con un gruppo ha il group id, se invece è con un altro utente ha il dest_user_id, ha il last message che all'inizio non sarà assegnato. 
+Scaricare l'estensione REST API CLIENT, questo è il link dell'esentione se non riuscite a trovarlo:
+- https://marketplace.visualstudio.com/items?itemName=donebd.rest-client-api
 
-Se la conversazione è con un altro utente prende come parametro un messaggio da mandare all'utente.
-Se la conversazione è con un gruppo, allora, ha solo i dati del grupop (solo ID e calcolo dell'id della conversazione)
+Dopo averlo scaricato create un file .http all'interno della cartella service/api, come per esempio test.https. All'interno del file 
+dovete scrivere le richieste http da mandare al proprio server. Per vedere come scrivere i file aprire il mio file chiamato ciccio.http all'interno della cartella service/api.
+Dopo aver creato il file, nel terminale eseguite il seguente comando 
+```bash
+go run ./cmd/webapi
+```
+Dopo averlo eseguito su vs code andate nel file .http che avete creato e se l'estensione funziona sopra ogni richiesta appare una 
+piccola scritta Send Request, cliccate sulla scritta e vi appare una finestra nella quale viene riportata il messaggio di risposta alla richiesta http come lo avete impostato voi nei.
 
-### Update Last Message
-
-Quando viene mandato un messaggio bisogna aggiornare l'ultimo messaggio nella table delle conversazioni
+N.B. Quando eseguito il comando go run vi potrebbero dare degli errori, conrtollate bene gli errori e risolveteli prima di passare all'estensione. Inoltre, se il comando è andato a buon fine vi spunta la seguente scritta:
+```bash
+INFO[0000] API Listening on 0.0.0.0:3000
+```
+Se il numero non è 3000 va bene lo stesso, ma all'interno del file http assicuratevi che il link http abbia il numero che vi spunta al posto di 3000 (Guardate il mio file .http per capire)
