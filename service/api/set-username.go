@@ -38,6 +38,16 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		BadRequest(w, err, ctx, "Username already used")
 	}
 
+	// Set the id of the user from the endpoint
+	user.UserId = userId
+
+	// Take the user from the db
+	err = user.ConvertUserFromDB(user.ConvertUserForDB())
+	if err != nil {
+		InternalServerError(w, err, ctx)
+		return
+	}
+
 	// Username changed, resposne 200
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "application/json")

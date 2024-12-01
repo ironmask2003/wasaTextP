@@ -21,7 +21,7 @@ func (g *Group) ConvertGroupForDB() database.Group {
 func (g *Group) ConvertGroupFromDB(groupDB database.Group) error {
 	g.GroupId = groupDB.GroupId
 	g.GroupName = groupDB.GroupName
-	groupPhoto, err := imageFunctions.ImageToBase64(imageFunctions.SetDefaultPhoto(g.GroupId))
+	groupPhoto, err := imageFunctions.ImageToBase64(imageFunctions.SetDefaultPhotoGroup(g.GroupId))
 	if err != nil {
 		return err
 	}

@@ -62,24 +62,23 @@ type AppDatabase interface {
 
 	// -- GROUP OPERATION -- //
 
+	// Add a user to a group
+	AddUserGroup(userId int, groupId int) error
+
+	// Create Group
+	CreateGroup(group Group, userId int) (Group, error)
+
 	// Get Groiup information from the db with the id
 	GetGroupById(groupId int) (Group, error)
 
-	// -- CONVERSATION OPERATION -- //
+	// Check if a user is member of a group
+	CheckMember(userId int, groupId int) (bool, error)
 
-	// Create Conversation
-	CreateConversation(conv Conversation, m Message) (Conversation, error)
+	// Delete group
+	DeleteGroup(groupId int) error
 
-	// Check if a Conversation with a user exist
-	CheckIfExistConversationWithUser(userId int, senderUsedId int) (bool, error)
-
-	// Check if a Conversation with a group exist
-	CheckIfExistConversationWithGroup(userId int, groupId int) (bool, error)
-
-	// -- MESSAGE OPERATION -- //
-
-	// Create Message
-	CreateMessage(m Message) (Message, error)
+	// Delete all the user from the user_group table there are member of the group
+	DeleteMember(groupId int, tx *sql.Tx) error
 
 	Ping() error
 }

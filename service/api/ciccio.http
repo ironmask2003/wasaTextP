@@ -1,7 +1,50 @@
 # DO LOGIN #
-POST http://localhost:3000/session HTTP/1.1
+POST http://localhost:6000/session  HTTP/1.1
 content-type: application/json
 
 {
-    "username": "lokki"
+    "username": "mattiapapa"
 }
+
+
+###
+
+# SET USERNAME #
+PUT http://localhost:6000/profiles/3/username HTTP/1.1
+Authorization: 3
+content-type: application/json
+
+{
+    "username": "cizzo"
+}
+
+### 
+
+# DELETE USER #
+DELETE http://localhost:6000/profiles/9  HTTP/1.1
+Authorization: 9
+
+###
+
+# CREATE GROUP #
+POST http://localhost:6000/profiles/1/groups  HTTP/1.1
+Authorization: 1
+content-type: application/json
+
+{
+    "groupName": "provaGruppo1",
+    "users" : [
+        {
+            "username": "lachi"
+        },
+        {
+            "username": "mattiapapa"
+        }
+    ]
+}
+
+### 
+
+# DELETE GROUP #
+DELETE http://localhost:6000/profiles/1/groups/1  HTTP/1.1
+Authorization: 1

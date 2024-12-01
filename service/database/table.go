@@ -40,19 +40,18 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
 *	- GroupName: string not null, Name of the group
  */
 var groupTableSQL = `CREATE TABLE IF NOT EXISTS group_t (
-	GroupId INTEGER NOT NULL UNIQUE,
+	GroupId INTEGER NOT NUL,
 	GroupName STRING NOT NULL,
 	PRIMARY KEY(GroupId)
 );`
 
 var userGroupTableSQL = `CREATE TABLE IF NOT EXISTS user_group (
 	GroupId INTEGER NOT NULL,
-	UserID INTEGER NOT NULL,
-	PRIMARY KEY(GroupId, UserID),
+	UserId INTEGER NOT NULL,
 	CONSTRAINT fk_user_group
 		FOREIGN KEY (GroupId) REFERENCES group_t(GroupId)
 		ON DELETE CASCADE
-		FOREIGN KEY (UserID) REFERENCES user(UserId)
+		FOREIGN KEY (UserId) REFERENCES user(UserId)
 		ON DELETE CASCADE
 )`
 

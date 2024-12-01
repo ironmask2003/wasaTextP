@@ -228,7 +228,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/groups/created/{group}/groupname:
+  /users/{user}/groups/{group}/groupname:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"
@@ -259,7 +259,7 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
-  /users/{user}/groups/created/{group}/grouphoto:
+  /users/{user}/groups/{group}/grouphoto:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"

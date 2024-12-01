@@ -6,6 +6,7 @@ import (
 
 // Handler returns an instance of httprouter.Router that handle APIs registered here
 func (rt *_router) Handler() http.Handler {
+
 	// User routes
 	//
 	// -- Do Login -- //
@@ -16,11 +17,17 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Set my Photo -- //
 	rt.router.PUT("/profiles/:user/photo", rt.wrap(rt.setMyPhoto, true))
-
-	// Conversation routes
 	//
-	// -- Create Conversation -- //
-	rt.router.PUT("/profiles/:user/conversations/:dest_user_id", rt.wrap(rt.CreateConversation, true))
+	// -- Delete User -- //
+	rt.router.DELETE("/profiles/:user", rt.wrap(rt.deleteUser, true))
+
+	// Group routes
+	//
+	// -- Create Group -- //
+	rt.router.POST("/profiles/:user/groups", rt.wrap(rt.createGroup, true))
+	//
+	// -- Delete Group -- //
+	rt.router.DELETE("/profiles/:user/groups/:group", rt.wrap(rt.deleteGroup, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

@@ -30,7 +30,7 @@ func (db *appdbimpl) DeleteUser(UserId int) error {
 	}
 
 	// Delete the user folder
-	path := "./storage/" + fmt.Sprint(UserId) + "/"
+	path := "./storage/profiles/" + fmt.Sprint(UserId) + "/"
 	if err := os.RemoveAll(path); err != nil {
 		return err
 	}

@@ -58,7 +58,7 @@ func (db *appdbimpl) CreateUser(u User) (User, error) {
 	user.UserId += maxID + 1
 
 	// Craetion of the user folder
-	path := "./storage/" + fmt.Sprint(user.UserId) + "/conversations"
+	path := "./storage/profiles/" + fmt.Sprint(user.UserId) + "/conversations"
 	if err := os.MkdirAll(path, os.ModePerm); err != nil {
 		return user, err
 	}
