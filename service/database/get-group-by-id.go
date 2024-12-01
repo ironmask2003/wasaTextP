@@ -1,6 +1,6 @@
 package database
 
-var queryFindGroupById = `SELECT GroupId, GroupName FROM group WHERE GroupId = ?;`
+var queryFindGroupById = `SELECT GroupId, GroupName FROM group_t WHERE GroupId = ?;`
 
 func (db *appdbimpl) GetGroupById(groupId int) (Group, error) {
 	var group Group

@@ -27,6 +27,13 @@ func (rt *_router) deleteGroup(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	// Check if the group exist
+	_, err = rt.db.GetGroupById(groupId)
+	if err != nil {
+		BadRequest(w, err, ctx, "The group doesn't exist")
+		return
+	}
+
 	// Check if the user is mebmber of the group
 	isMember, err := rt.db.CheckMember(userId, groupId)
 	if !isMember || err != nil {

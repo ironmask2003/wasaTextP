@@ -21,8 +21,8 @@ content-type: application/json
 ### 
 
 # DELETE USER #
-DELETE http://localhost:6000/profiles/9  HTTP/1.1
-Authorization: 9
+DELETE http://localhost:6000/profiles/5  HTTP/1.1
+Authorization: 5
 
 ###
 
@@ -53,10 +53,10 @@ content-type: application/json
 {
     "users" : [
         {
-            "username": "cizzo"
+            "username": "erosito"
         },
         {
-            "username": "erosito"
+            "username": "cizzo"
         }
     ]
 }
@@ -64,5 +64,5 @@ content-type: application/json
 ### 
 
 # DELETE GROUP #
-DELETE http://localhost:6000/profiles/5/groups/1  HTTP/1.1
-Authorization: 5
+DELETE http://localhost:6000/profiles/1/groups/1  HTTP/1.1
+Authorization: 1
