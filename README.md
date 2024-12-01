@@ -32,6 +32,22 @@ git push
 
 Se chiede l'accesso, mettere username e come password mettete un token generato da github. Per generare il token andate su github, cliccate sulla vostra immagine in alto a destra, cliccate su settings, andate su Developer settings, cliccate su personal access tokens, token classi, generate token classic, mettere un nome al token, selezionare tutte le caselle e generare il token, copiare il token e segnarsi il token da qualche parte. (Tranne nella chat con un utente in quanto per aprire una conversazione con un altro utente bisogna mandare un messaggio)
 
+## Controllo dei file go
+
+Per controllare la sintassi dei file go come il prof, bisogna scaricare golangci-lint, per farlo eseguite da terminale il seguente comando:
+```bash
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.0
+```
+Dopo averlo eseguito controllare se funziona scrivendo sempre da terminale `golangci-lint --version`, se vi esce la versione allora è stato installato correttamente, altrimenti provate a riavviare il terminale e a controllare di nuovo la versione.
+Per controllare i file, eseguito questi due comandi 
+```bash
+golangci-lint run service/api -E rowserrcheck
+```
+Questo comando server per controllare i file all'interno della cartella api, per controllare i file all'interno della cartella database eseguire il comando:
+```bash
+golangci-lint run service/database -E rowserrcheck
+``` 
+
 ## Test API con REST API CLIENT (Estensione VS CODE)
 
 Scaricare l'estensione REST API CLIENT, questo è il link dell'esentione se non riuscite a trovarlo:
