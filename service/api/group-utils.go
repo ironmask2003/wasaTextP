@@ -1,6 +1,7 @@
 package api
 
 import (
+	"regexp"
 	"wasa.project/service/api/imageFunctions"
 	"wasa.project/service/database"
 )
@@ -27,4 +28,10 @@ func (g *Group) ConvertGroupFromDB(groupDB database.Group) error {
 	}
 	g.Photo = groupPhoto
 	return nil
+}
+
+// Check if the group respect the regex
+func (g *Group) IsValid() bool {
+	validUser := regexp.MustCompile(`^[a-z][a-z0-9]{2,13}$`)
+	return validUser.MatchString(g.GroupName)
 }

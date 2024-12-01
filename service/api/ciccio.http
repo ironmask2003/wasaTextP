@@ -63,6 +63,17 @@ content-type: application/json
 
 ### 
 
-# DELETE GROUP #
+# LEAVE GROUP #
 DELETE http://localhost:6000/profiles/1/groups/1  HTTP/1.1
 Authorization: 1
+
+###
+
+# SET GROUPNAME #
+PUT http://localhost:6000/profiles/1/groups/1/name HTTP/1.1
+Authorization: 1
+content-type: application/json
+
+{
+    "groupName": "negletti"
+}

@@ -21,21 +21,25 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	// Check if the user is authorized
 	if profileUserID != userId {
 		Forbidden(w, err, ctx, "Forbidden")
+		return
 	}
 
 	// Take the user object from the bosy of the request
 	var user User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		BadRequest(w, err, ctx, "Bad request")
+		return
 	}
 	// Check if the new username respect the regex
 	if !user.IsValid() {
 		BadRequest(w, err, ctx, "Invalid username")
+		return
 	}
 
 	// Change username
 	if err := rt.db.SetMyUsername(userId, user.Username); err != nil {
 		BadRequest(w, err, ctx, "Username already used")
+		return
 	}
 
 	// Set the id of the user from the endpoint

@@ -60,6 +60,15 @@ type AppDatabase interface {
 	// Get User information from the db with the id
 	GetUserById(userId int) (User, error)
 
+	// Delete a member from a group
+	LeaveGroup(UserId int, GroupId int) error
+
+	// Get all members of a group
+	GetMembers(groupId int) ([]User, error)
+
+	// Set new group name
+	SetGroupName(GroupId int, newName string) error
+
 	// -- GROUP OPERATION -- //
 
 	// Add a user to a group
