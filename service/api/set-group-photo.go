@@ -13,17 +13,30 @@ import (
 	"wasa.project/service/api/reqcontext"
 )
 
-func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	// Get the user id from the request
-	profileUserID, err := strconv.Atoi(ps.ByName("user"))
+func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	userId, err := strconv.Atoi(ps.ByName("user"))
 	if err != nil {
-		BadRequest(w, err, ctx, "Bad request")
+		BadRequest(w, err, ctx, "Bad Request")
 		return
 	}
 
-	userID := ctx.UserId
-	if profileUserID != userID {
+	// Check if the user is authorized
+	if userId != ctx.UserId {
 		Forbidden(w, err, ctx, "Forbidden")
+		return
+	}
+
+	// Take the group id from the endpoint
+	groupId, err := strconv.Atoi(ps.ByName("group"))
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad Request")
+		return
+	}
+
+	// Check if the user is a member of the group
+	isMember, err := rt.db.CheckMember(userId, groupId)
+	if !isMember || err != nil {
+		BadRequest(w, err, ctx, "The user is not a member of the group")
 		return
 	}
 
@@ -40,7 +53,6 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 		BadRequest(w, err, ctx, "Bad request")
 		return
 	}
-
 	// Read the file
 	data, err := io.ReadAll(file) // In data we have the image file taked in the request
 	if err != nil {
@@ -56,8 +68,8 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	defer func() { err = file.Close() }()
 
 	// Create the file
-	path := imageFunctions.SetDefaultPhoto(userID) // Take the path of the image of the user profile
-	err = os.WriteFile(path, data, 0644)           // Write the new image in the path selected
+	path := imageFunctions.SetDefaultPhotoGroup(groupId) // Take the path of the image of the user profile
+	err = os.WriteFile(path, data, 0644)                 // Write the new image in the path selected
 	if err != nil {
 		InternalServerError(w, err, ctx)
 		return
@@ -72,8 +84,9 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	// Resposne
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("Photo profile changed"); err != nil {
+	if err := json.NewEncoder(w).Encode("Photo changed"); err != nil {
 		InternalServerError(w, err, ctx)
 		return
 	}
+
 }

@@ -34,6 +34,9 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Set new name to the group -- //
 	rt.router.PUT("/profiles/:user/groups/:group/name", rt.wrap(rt.setGroupName, true))
+	//
+	// -- Set new photo group -- //
+	rt.router.PUT("/profiles/:user/groups/:group/photo", rt.wrap(rt.setGroupPhoto, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
