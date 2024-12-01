@@ -11,7 +11,12 @@ import (
 
 // Function return the path of the user photo profile
 func SetDefaultPhoto(userId int) string {
-	return fmt.Sprintf("./storage/%d/user_photo.jpg", userId)
+	return fmt.Sprintf("./storage/profiles/%d/user_photo.jpg", userId)
+}
+
+// Function return the path of the group
+func SetDefaultPhotoGroup(groupId int) string {
+	return fmt.Sprintf("./storage/groups/%d/group_photo.jpg", groupId)
 }
 
 // Function convert an image in base64
