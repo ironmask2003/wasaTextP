@@ -45,6 +45,24 @@ content-type: application/json
 
 ### 
 
-# DELETE GROUP #
-DELETE http://localhost:6000/profiles/1/groups/1  HTTP/1.1
+# ADD TO GROUP #
+PUT http://localhost:6000/profiles/1/groups/1  HTTP/1.1
 Authorization: 1
+content-type: application/json 
+
+{
+    "users" : [
+        {
+            "username": "cizzo"
+        },
+        {
+            "username": "erosito"
+        }
+    ]
+}
+
+### 
+
+# DELETE GROUP #
+DELETE http://localhost:6000/profiles/5/groups/1  HTTP/1.1
+Authorization: 5

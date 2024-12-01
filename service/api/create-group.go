@@ -51,7 +51,7 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Take the gorup name
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		BadRequest(w, err, ctx, "Bad request stacce")
+		BadRequest(w, err, ctx, "Bad request -> can't take the body request, check the struct")
 		return
 	}
 
@@ -60,14 +60,13 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	// Creation of the group in the db
 	g, err = rt.CreateGroupDB(g, userId)
 	if err != nil {
-		BadRequest(w, err, ctx, "Bad request frocio")
+		BadRequest(w, err, ctx, "Bad request, can't create the group")
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
 
 	// List of users to add in the group
-	var user []User
-	user = body.Users
+	user := body.Users
 
 	for i := 0; i < len(user); i++ {
 		userDB, err := rt.db.GetUserByName(user[i].Username)
@@ -92,14 +91,14 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 			}
 
 			if !exist {
-				BadRequest(w, err, ctx, "Non esiste stacce")
+				BadRequest(w, err, ctx, "The user dosn't exist")
 				return
 			}
 
 			// Add
 			err = rt.db.AddUserGroup(user[i].UserId, g.GroupId)
 			if err != nil {
-				BadRequest(w, err, ctx, user[i].Username+" not added to the group "+strconv.Itoa(user[i].UserId))
+				InternalServerError(w, err, ctx)
 				return
 			}
 		}

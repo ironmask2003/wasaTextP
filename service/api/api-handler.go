@@ -28,6 +28,9 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Delete Group -- //
 	rt.router.DELETE("/profiles/:user/groups/:group", rt.wrap(rt.deleteGroup, true))
+	//
+	// -- Add to Group -- //
+	rt.router.PUT("/profiles/:user/groups/:group", rt.wrap(rt.addToGroup, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
