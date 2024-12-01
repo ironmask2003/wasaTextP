@@ -98,4 +98,10 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Response
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("content-type", "plain/text")
+	if err := json.NewEncoder(w).Encode("Member added"); err != nil {
+		InternalServerError(w, err, ctx)
+		return
+	}
+
 }
