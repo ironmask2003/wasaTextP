@@ -36,7 +36,7 @@ Se chiede l'accesso, mettere username e come password mettete un token generato 
 
 Per controllare la sintassi dei file go come il prof, bisogna scaricare golangci-lint, per farlo eseguite da terminale il seguente comando:
 ```bash
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.62.0
+sudo snap install golangci-lint --classic
 ```
 Dopo averlo eseguito controllare se funziona scrivendo sempre da terminale `golangci-lint --version`, se vi esce la versione allora è stato installato correttamente, altrimenti provate a riavviare il terminale e a controllare di nuovo la versione.
 Per controllare i file, eseguito questi due comandi 
