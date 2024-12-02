@@ -318,7 +318,7 @@ paths:
       - $ref: "#/components/parameters/conv"
     put:
       tags: [Conversation]
-      operationId: putConversation
+      operationId: createConversation
       security:
         - bearerAuth: []
       summary: Create conversation
