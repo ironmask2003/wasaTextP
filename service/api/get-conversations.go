@@ -32,7 +32,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 
 	for i, dbConv := range convsDB {
 		var conv Conversation
-		prova, err := rt.db.GetConversationById(dbConv.ConversationId)
+		prova, err := rt.db.GetConversationById(dbConv.ConversationId, userId)
 		if err != nil {
 			BadRequest(w, err, ctx, "Bad Request -> can't take the conversations"+strconv.Itoa(prova.ConversationId))
 			return

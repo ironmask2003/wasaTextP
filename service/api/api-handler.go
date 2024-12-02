@@ -45,6 +45,9 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Get My Conversations -- //
 	rt.router.GET("/profiles/:user/conversations", rt.wrap(rt.getMyConversations, true))
+	//
+	// -- Get Conversation -- //
+	rt.router.GET("/profiles/:user/conversations/:conversation", rt.wrap(rt.getConversation, true))
 
 	// Message routes
 	//

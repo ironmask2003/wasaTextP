@@ -3,7 +3,7 @@ POST http://localhost:3000/session  HTTP/1.1
 content-type: application/json
 
 {
-    "username": "eros"
+    "username": "ultimo"
 }
 
 
@@ -67,7 +67,7 @@ Authorization: 1
 content-type: application/json
 
 {
-    "groupName": "provaGruppo1",
+    "groupName": "fate",
     "users" : [
         {
             "username": "eros"
@@ -128,11 +128,11 @@ Content-Type: image/jpeg
 
 # CREATE CONVERSATION #
 
-PUT http://localhost:3000/profiles/4/conversations/2  HTTP/1.1
-Authorization: 4
+PUT http://localhost:3000/profiles/5/conversations/1  HTTP/1.1
+Authorization: 5
 
 {
-    "message" : "ciao"
+    "message" : "aiutami ti prego, sono down"
 }
 
 ###
@@ -144,10 +144,16 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/1/conversations/1/messages  HTTP/1.1
-Authorization: 1
-content-type: application/json
+POST http://localhost:3000/profiles/4/conversations/6/messages  HTTP/1.1
+Authorization: 4
+content-type: application/json 
 
 {
-    "message": "coglione"
+    "message": "ciao fate"
 }
+
+###
+
+# GET CONVERSATION #
+GET http://localhost:3000/profiles/4/conversations/6  HTTP/1.1
+Authorization: 4

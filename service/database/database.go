@@ -95,7 +95,7 @@ type AppDatabase interface {
 	CreateConversation(c Conversation) (Conversation, error)
 
 	// Get the conversation by id
-	GetConversationById(convId int) (Conversation, error)
+	GetConversationById(convId int, userId int) (Conversation, error)
 
 	// Update last message in conversation
 	UpdateLastMessage(convId int, msgId int) error
@@ -108,6 +108,18 @@ type AppDatabase interface {
 
 	// Get conversation by group
 	GetConversationsByGroup(groupId int) ([]Conversation, error)
+
+	// Get Conversation messages with a group
+	GetConversationGroup(conv Conversation) ([]Message, error)
+
+	// Get the conversation by id
+	GetConversation(userId int, convId int) ([]Message, error)
+
+	// Get the conversation with the group and the user
+	GetConversationsByUserGroup(groupId int, userId int) (int, error)
+
+	// Get the conversation with the senderUserId and the user
+	GetConversationsBySender(senderId int, userId int) (int, error)
 
 	// -- MESSAGE OPERATION -- //
 

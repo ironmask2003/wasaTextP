@@ -47,7 +47,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Get the conversation
-	conv, err := rt.db.GetConversationById(convId)
+	conv, err := rt.db.GetConversationById(convId, userId)
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad request, can't get the conversation")
 		return
