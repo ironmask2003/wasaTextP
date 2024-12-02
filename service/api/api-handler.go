@@ -38,6 +38,19 @@ func (rt *_router) Handler() http.Handler {
 	// -- Set new photo group -- //
 	rt.router.PUT("/profiles/:user/groups/:group/photo", rt.wrap(rt.setGroupPhoto, true))
 
+	// Conversation routes
+	//
+	// -- Create Conversation -- //
+	rt.router.PUT("/profiles/:user/conversations/:receiver", rt.wrap(rt.createConversation, true))
+	//
+	// -- Get My Conversations -- //
+	rt.router.GET("/profiles/:user/conversations", rt.wrap(rt.getMyConversations, true))
+
+	// Message routes
+	//
+	// -- Send Message -- //
+	rt.router.POST("/profiles/:user/conversations/:conversation/messages", rt.wrap(rt.sendMessage, true))
+
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

@@ -22,16 +22,19 @@ var userTableSQL = `CREATE TABLE IF NOT EXISTS user (
 *	- SenderUserID: int (PK) (FK) User that sent the message
  */
 var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
-	MessageId INTEGER NOT NULL UNIQUE,
+	MessageId INTEGER NOT NULL,
   Message TEXT,
   SendTime DATETIME DEFAULT CURRENT_TIMESTAMP,
   Status TEXT,
   SendUserId INTEGER NOT NULL,
   ConversationId INTEGER NOT NULL,
-  PRIMARY KEY (MessageId, SendUserId, ConversationId),
+  UserConversationId INTEGER,
+  PRIMARY KEY(MessageId, ConversationId),
   CONSTRAINT fk_message
     FOREIGN KEY (SendUserId) REFERENCES user(UserId)
-    ON DELETE CASCADE
+      ON DELETE CASCADE
+    FOREIGN KEY (ConversationId, UserConversationId) REFERENCES conversation(ConversationId, UserId)
+      ON DELETE CASCADE
 );`
 
 /*
@@ -40,7 +43,7 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
 *	- GroupName: string not null, Name of the group
  */
 var groupTableSQL = `CREATE TABLE IF NOT EXISTS group_t (
-	GroupId INTEGER NOT NUL,
+	GroupId INTEGER NOT NULL,
 	GroupName STRING NOT NULL,
 	PRIMARY KEY(GroupId)
 );`
@@ -48,6 +51,7 @@ var groupTableSQL = `CREATE TABLE IF NOT EXISTS group_t (
 var userGroupTableSQL = `CREATE TABLE IF NOT EXISTS user_group (
 	GroupId INTEGER NOT NULL,
 	UserId INTEGER NOT NULL,
+  PRIMARY KEY(GroupId, UserId),
 	CONSTRAINT fk_user_group
 		FOREIGN KEY (GroupId) REFERENCES group_t(GroupId)
 		ON DELETE CASCADE
@@ -63,17 +67,22 @@ var userGroupTableSQL = `CREATE TABLE IF NOT EXISTS user_group (
 *	- LastMessageId: int (FK)
  */
 var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
-	ConversationId INTEGER NOT NULL UNIQUE,
-	UserId INTEGER UNIQUE NOT NULL,
-  GroupId INTEGER UNIQUE,
-	SenderUserId INTEGER UNIQUE,
+	ConversationId INTEGER NOT NULL,
+	UserId INTEGER NOT NULL,
+  GroupId INTEGER,
+	SenderUserId INTEGER,
 	LastMessageId INTEGER,
-	PRIMARY KEY(ConversationId, UserId),
+  LastMessageConversationId INTEGER,
+  PRIMARY KEY(ConversationId, UserId),
 	CONSTRAINT fk_conversation
 		FOREIGN KEY (GroupId) REFERENCES group_t(GroupId)
-		ON DELETE CASCADE
-		FOREIGN KEY (UserID) REFERENCES user(UserId)
-		ON DELETE CASCADE
-		FOREIGN KEY (LastMessageId) REFERENCES message(MessageId)
-		ON DELETE CASCADE
+		  ON DELETE CASCADE
+		FOREIGN KEY (UserId) REFERENCES user(UserId)
+		  ON DELETE CASCADE
+    FOREIGN KEY (SenderUserId) REFERENCES user(UserId)
+		  ON DELETE CASCADE
+		FOREIGN KEY (LastMessageId, LastMessageConversationId) REFERENCES message(MessageId, ConversationId)
+		  ON DELETE CASCADE
+  CONSTRAINT unique_conversation
+    UNIQUE (UserId, SenderUserId, GroupId)
 );`

@@ -89,6 +89,31 @@ type AppDatabase interface {
 	// Delete all the user from the user_group table there are member of the group
 	DeleteMember(groupId int, tx *sql.Tx) error
 
+	// -- CONVERSATION OPERATION -- //
+
+	// Create a conversation
+	CreateConversation(c Conversation) (Conversation, error)
+
+	// Get the conversation by id
+	GetConversationById(convId int) (Conversation, error)
+
+	// Update last message in conversation
+	UpdateLastMessage(convId int, msgId int) error
+
+	// Delete conversation
+	DeleteConversation(convId int) error
+
+	// Get my conversations
+	GetConversations(userId int) ([]Conversation, error)
+
+	// Get conversation by group
+	GetConversationsByGroup(groupId int) ([]Conversation, error)
+
+	// -- MESSAGE OPERATION -- //
+
+	// Create a message
+	CreateMessage(m Message) (Message, error)
+
 	Ping() error
 }
 

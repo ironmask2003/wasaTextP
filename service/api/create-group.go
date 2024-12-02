@@ -104,6 +104,16 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}
 
+	// Creation of the group in the db
+	var c Conversation
+	c.UserId = userId
+	c.GroupId = g.GroupId
+	c, err = rt.CreateConversationDB(c)
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad request, can't create the conversation")
+		return
+	}
+
 	// Respose
 	w.Header().Set("content-type", "application/json")
 	if err := json.NewEncoder(w).Encode(g); err != nil {
