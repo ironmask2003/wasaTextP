@@ -73,6 +73,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	err = user.ConvertUserFromDB(userDB)
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad Request -> error converting the user from the db")
+		return
 	}
 	c.SenderUserId = user.UserId
 
@@ -90,6 +91,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	cRcv, err = rt.CreateConversationDB(cRcv)
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad Request, can't create the conversation for the receiver")
+		return
 	}
 
 	// Take the message
@@ -112,6 +114,12 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	err = rt.db.UpdateLastMessage(msg.ConversationId, userId, msg.MessageId)
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad Request, failed to update last message")
+		return
+	}
+	err = rt.db.UpdateLastMessage(cRcv.ConversationId, cRcv.UserId, msg.MessageId)
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad Request, failed to update last message")
+		return
 	}
 	w.WriteHeader(http.StatusCreated)
 

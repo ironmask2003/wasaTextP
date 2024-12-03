@@ -144,7 +144,7 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/3/conversations/1/messages?msg=13  HTTP/1.1
+POST http://localhost:3000/profiles/3/conversations/1/messages?msg=16  HTTP/1.1
 Authorization: 3
 content-type: application/json 
 
@@ -155,5 +155,5 @@ content-type: application/json
 ###
 
 # GET CONVERSATION #
-GET http://localhost:3000/profiles/1/conversations/1  HTTP/1.1
-Authorization: 1
+GET http://localhost:3000/profiles/3/conversations/1  HTTP/1.1
+Authorization: 3

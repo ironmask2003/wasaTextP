@@ -120,7 +120,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 		err = rt.db.UpdateLastMessage(convRcv, conv.SenderUserId, msg.MessageId)
 		if err != nil {
-			BadRequest(w, err, ctx, "Bad Request, failed to update last message")
+			BadRequest(w, err, ctx, "Bad Request, failed to update last message 1")
 			return
 		}
 		err = rt.db.UpdateLastMessage(conv.ConversationId, userId, msg.MessageId)
