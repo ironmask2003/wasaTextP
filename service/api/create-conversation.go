@@ -79,8 +79,17 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 	// Creation of the group in the db
 	c, err = rt.CreateConversationDB(c)
 	if err != nil {
-		BadRequest(w, err, ctx, "Bad request, can't create the conversation with user")
+		BadRequest(w, err, ctx, "Bad request, can't create the conversation for the user")
 		return
+	}
+
+	// Craeating the conversation for the receiver
+	var cRcv Conversation
+	cRcv.UserId = user.UserId
+	cRcv.SenderUserId = userId
+	cRcv, err = rt.CreateConversationDB(cRcv)
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad Request, can't create the conversation for the receiver")
 	}
 
 	// Take the message
@@ -100,7 +109,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		BadRequest(w, err, ctx, "Bad request, can't create the message")
 		return
 	}
-	err = rt.db.UpdateLastMessage(msg.ConversationId, msg.MessageId)
+	err = rt.db.UpdateLastMessage(msg.ConversationId, userId, msg.MessageId)
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad Request, failed to update last message")
 	}

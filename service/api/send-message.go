@@ -90,11 +90,27 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 			return
 		}
 		for i := 0; i < len(convs); i++ {
-			err = rt.db.UpdateLastMessage(convs[i].ConversationId, msg.MessageId)
+			err = rt.db.UpdateLastMessage(convs[i].ConversationId, convs[i].UserId, msg.MessageId)
 			if err != nil {
 				BadRequest(w, err, ctx, "Bad Request, failed to update last message")
 				return
 			}
+		}
+	} else {
+		convRcv, err := rt.db.GetConversationsBySender(userId, conv.SenderUserId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Bad Request, failed to get conversations")
+			return
+		}
+		err = rt.db.UpdateLastMessage(convRcv, conv.SenderUserId, msg.MessageId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Bad Request, failed to update last message")
+			return
+		}
+		err = rt.db.UpdateLastMessage(conv.ConversationId, userId, msg.MessageId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Bad Request, failed to update last message")
+			return
 		}
 	}
 	w.WriteHeader(http.StatusCreated)

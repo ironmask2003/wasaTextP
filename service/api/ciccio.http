@@ -128,8 +128,8 @@ Content-Type: image/jpeg
 
 # CREATE CONVERSATION #
 
-PUT http://localhost:3000/profiles/5/conversations/1  HTTP/1.1
-Authorization: 5
+PUT http://localhost:3000/profiles/2/conversations/1  HTTP/1.1
+Authorization: 2
 
 {
     "message" : "aiutami ti prego, sono down"
@@ -144,16 +144,16 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/4/conversations/6/messages  HTTP/1.1
-Authorization: 4
+POST http://localhost:3000/profiles/2/conversations/4/messages  HTTP/1.1
+Authorization: 2
 content-type: application/json 
 
 {
-    "message": "ciao fate"
+    "message": "rispondimi"
 }
 
 ###
 
 # GET CONVERSATION #
-GET http://localhost:3000/profiles/4/conversations/6  HTTP/1.1
-Authorization: 4
+GET http://localhost:3000/profiles/1/conversations/1  HTTP/1.1
+Authorization: 1

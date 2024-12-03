@@ -29,7 +29,7 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
   SendUserId INTEGER NOT NULL,
   ConversationId INTEGER NOT NULL,
   UserConversationId INTEGER,
-  PRIMARY KEY(MessageId, ConversationId),
+  PRIMARY KEY(MessageId, SendUserId, ConversationId),
   CONSTRAINT fk_message
     FOREIGN KEY (SendUserId) REFERENCES user(UserId)
       ON DELETE CASCADE
@@ -73,6 +73,7 @@ var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
 	SenderUserId INTEGER,
 	LastMessageId INTEGER,
   LastMessageConversationId INTEGER,
+  LastMessageSender INTEGER,
   PRIMARY KEY(ConversationId, UserId),
 	CONSTRAINT fk_conversation
 		FOREIGN KEY (GroupId) REFERENCES group_t(GroupId)
@@ -81,7 +82,7 @@ var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
 		  ON DELETE CASCADE
     FOREIGN KEY (SenderUserId) REFERENCES user(UserId)
 		  ON DELETE CASCADE
-		FOREIGN KEY (LastMessageId, LastMessageConversationId) REFERENCES message(MessageId, ConversationId)
+		FOREIGN KEY (LastMessageId, LastMessageSender, LastMessageConversationId) REFERENCES message(MessageId, SendUserId, ConversationId)
 		  ON DELETE CASCADE
   CONSTRAINT unique_conversation
     UNIQUE (UserId, SenderUserId, GroupId)

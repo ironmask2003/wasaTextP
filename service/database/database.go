@@ -98,7 +98,7 @@ type AppDatabase interface {
 	GetConversationById(convId int, userId int) (Conversation, error)
 
 	// Update last message in conversation
-	UpdateLastMessage(convId int, msgId int) error
+	UpdateLastMessage(convId int, userId int, msgId int) error
 
 	// Delete conversation
 	DeleteConversation(convId int) error
