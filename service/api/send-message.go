@@ -2,9 +2,11 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"net/url"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
 )
 
@@ -23,6 +25,20 @@ func (rt *_router) CreateMessageDB(m Message) (Message, error) {
 	}
 
 	return m, nil
+}
+
+func check_query(query url.Values) (int, error) {
+	id_msg_response := 0
+	var err error
+
+	if query.Has("msg") {
+		id_msg_response, err = strconv.Atoi(query.Get("msg"))
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return id_msg_response, nil
 }
 
 func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
@@ -114,6 +130,31 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}
 	w.WriteHeader(http.StatusCreated)
+
+	// Get the id of the message of the query
+	msgId, err := check_query(r.URL.Query())
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad Request, have the msg response but can't get it")
+		return
+	}
+
+	if msgId != 0 {
+		// Check if the msgId is present in the conversation
+		if _, err := rt.db.CheckMessageConv(msgId, conv.ConversationId, userId); err != nil {
+			BadRequest(w, err, ctx, "Bad Request, the message isn't in the conversation")
+			return
+		}
+		type Response struct {
+			MsgResponse Message `json:"msgResponse"`
+			IdResponse  int     `json:"idResponse"`
+		}
+		w.Header().Set("content-type", "application/json")
+		if err := json.NewEncoder(w).Encode(Response{MsgResponse: msg, IdResponse: msgId}); err != nil {
+			InternalServerError(w, err, ctx)
+			return
+		}
+		return
+	}
 
 	// Response
 	w.Header().Set("content-type", "application/json")

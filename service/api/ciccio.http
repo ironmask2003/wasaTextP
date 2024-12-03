@@ -3,7 +3,7 @@ POST http://localhost:3000/session  HTTP/1.1
 content-type: application/json
 
 {
-    "username": "ultimo"
+    "username": "erosito"
 }
 
 
@@ -128,11 +128,11 @@ Content-Type: image/jpeg
 
 # CREATE CONVERSATION #
 
-PUT http://localhost:3000/profiles/2/conversations/1  HTTP/1.1
-Authorization: 2
+PUT http://localhost:3000/profiles/1/conversations/3  HTTP/1.1
+Authorization: 1
 
 {
-    "message" : "aiutami ti prego, sono down"
+    "message" : "grande capo bianco"
 }
 
 ###
@@ -144,12 +144,12 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/2/conversations/4/messages  HTTP/1.1
-Authorization: 2
+POST http://localhost:3000/profiles/3/conversations/1/messages?msg=13  HTTP/1.1
+Authorization: 3
 content-type: application/json 
 
 {
-    "message": "rispondimi"
+    "message": "porco dio"
 }
 
 ###

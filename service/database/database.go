@@ -126,6 +126,9 @@ type AppDatabase interface {
 	// Create a message
 	CreateMessage(m Message) (Message, error)
 
+	// Check if a message is in a specified conversation
+	CheckMessageConv(msgId int, convId int, userId int) (bool, error)
+
 	Ping() error
 }
 
