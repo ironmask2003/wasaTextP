@@ -1,7 +1,7 @@
 package database
 
 // Query used to get all conversation with a group
-var queryGetConversationsByGroup = `SELECT ConversationId FROM conversation WHERE GroupId = ?`
+var queryGetConversationsByGroup = `SELECT ConversationId, UserId FROM conversation WHERE GroupId = ?`
 
 func (db *appdbimpl) GetConversationsByGroup(groupId int) ([]Conversation, error) {
 	// Get all conversations of a group from the db
@@ -19,7 +19,7 @@ func (db *appdbimpl) GetConversationsByGroup(groupId int) ([]Conversation, error
 		}
 
 		var conv Conversation
-		err = rows.Scan(&conv.ConversationId)
+		err = rows.Scan(&conv.ConversationId, &conv.UserId)
 		if err != nil {
 			return nil, err
 		}

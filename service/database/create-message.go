@@ -9,11 +9,11 @@ import (
 var queryAddMessage = "INSERT INTO message (MessageId, Message, SendUserId, ConversationId) VALUES (?, ?, ?, ?) "
 
 // Query for get the last ID used in the conversation table
-var queryLastMessageId = "SELECT MAX(MessageId) FROM message WHERE ConversationId = ?"
+var queryLastMessageId = "SELECT MAX(MessageId) FROM message WHERE ConversationId = ? AND SendUserId = ?"
 
-func GetLastElemMessage(db *appdbimpl, convId int) (int, error) {
+func GetLastElemMessage(db *appdbimpl, convId int, senderUserId int) (int, error) {
 	var _maxID = sql.NullInt64{Int64: 0, Valid: false}
-	row, err := db.c.Query(queryLastMessageId, convId)
+	row, err := db.c.Query(queryLastMessageId, convId, senderUserId)
 	if err != nil {
 		return 0, err
 	}
@@ -44,7 +44,7 @@ func (db *appdbimpl) CreateMessage(m Message) (Message, error) {
 	msg.Text = m.Text
 
 	// Getting the max id in the conversation table
-	maxID, err := GetLastElemMessage(db, msg.ConversationId)
+	maxID, err := GetLastElemMessage(db, msg.ConversationId, msg.SenderUserId)
 	if err != nil {
 		return msg, err
 	}

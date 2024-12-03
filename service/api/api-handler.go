@@ -53,6 +53,12 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Send Message -- //
 	rt.router.POST("/profiles/:user/conversations/:conversation/messages", rt.wrap(rt.sendMessage, true))
+	//
+	// -- Fortward Message -- //
+	rt.router.POST("/profiles/:user/conversations/:conversation/messages/:message", rt.wrap(rt.forwardMessage, true))
+	//
+	// -- Delete Message -- //
+	rt.router.DELETE("/profiles/:user/conversations/:conversation/messages/:message", rt.wrap(rt.deleteMessage, true))
 
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)

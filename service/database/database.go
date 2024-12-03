@@ -129,6 +129,12 @@ type AppDatabase interface {
 	// Check if a message is in a specified conversation
 	CheckMessageConv(msgId int, convId int, userId int) (bool, error)
 
+	// Get a message from a conversation of a user
+	GetMessage(userId int, convId int, messageId int) (Message, error)
+
+	// Delete message
+	DeleteMessage(userId int, convId int, messageId int) error
+
 	Ping() error
 }
 
