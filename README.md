@@ -67,3 +67,15 @@ N.B. Quando eseguito il comando go run vi potrebbero dare degli errori, conrtoll
 INFO[0000] API Listening on 0.0.0.0:3000
 ```
 Se il numero non è 3000 va bene lo stesso, ma all'interno del file http assicuratevi che il link http abbia il numero che vi spunta al posto di 3000 (Guardate il mio file .http per capire)
+
+## Controllo del database
+
+Per il controllo del database scaricare il seguente comando da terminale:
+```bash
+cargo install litelens-tui
+```
+
+Per controllare il database andate nel file `./cmd/webapi/load-configuration.go` all'interno di questo file alla riga 28 trovare il path in cui è salvato il file .db, modificato quel valore come ho fatto io nel mio file load-configuration, sul terminale spostatevi nella path indicata nel file ed eseguite il comando:
+```bash
+litelens-tui -p <nome_file>.db
+```
