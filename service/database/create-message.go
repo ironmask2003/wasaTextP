@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"strconv"
 )
 
 // Query for create a message in the message table
@@ -43,19 +44,49 @@ func (db *appdbimpl) CreateMessage(m Message) (Message, error) {
 	msg.SenderUserId = m.SenderUserId
 	msg.Text = m.Text
 
-	// Getting the max id in the conversation table
-	maxID, err := GetLastElemMessage(db, msg.ConversationId, msg.SenderUserId)
+	// Get conv of rcv
+	conv, err := db.GetConversationById(msg.ConversationId, msg.SenderUserId)
 	if err != nil {
 		return msg, err
 	}
 
-	// Setting the id of the new group
-	msg.MessageId += maxID + 1
+	convRcv, err := db.GetConversationsBySender(msg.SenderUserId, conv.SenderUserId)
+	if err != nil {
+		// Getting the max id in the conversation table
+		maxID, err := GetLastElemMessage(db, msg.ConversationId, msg.SenderUserId)
+		if err != nil {
+			return msg, err
+		}
+
+		msg.MessageId = maxID + 1
+		// -- INSERT THE MESSAGE IN THE DATABSE -- //
+		_, err = db.c.Exec(queryAddMessage, msg.MessageId, msg.Text, msg.SenderUserId, msg.ConversationId)
+		if err != nil {
+			return msg, err
+		}
+		return msg, nil
+	}
+	maxRcv, err := GetLastElemMessage(db, convRcv, conv.SenderUserId)
+	if err != nil {
+		return msg, err
+	}
+
+	// Getting the max id in the conversation table
+	maxID, err := GetLastElemMessage(db, conv.ConversationId, msg.SenderUserId)
+	if err != nil {
+		return msg, err
+	}
+
+	if maxID > maxRcv {
+		msg.MessageId = maxID + 1
+	} else {
+		msg.MessageId = maxRcv + 1
+	}
 
 	// -- INSERT THE MESSAGE IN THE DATABSE -- //
 	_, err = db.c.Exec(queryAddMessage, msg.MessageId, msg.Text, msg.SenderUserId, msg.ConversationId)
 	if err != nil {
-		return msg, err
+		return msg, errors.New("Error creating the message " + strconv.Itoa(msg.MessageId))
 	}
 
 	return msg, nil

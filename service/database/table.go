@@ -87,3 +87,24 @@ var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
   CONSTRAINT unique_conversation
     UNIQUE (UserId, SenderUserId, GroupId)
 );`
+
+/*
+* COMMENT TABLE
+* - CommentId: int (PK) Unique ID for each comment
+* - Comment: STRING
+* - MessageId: int (FK) ID for the message
+* - UserId: int (FK) ID for the user
+* - ConversationId: int (FK)
+* */
+var commentTableSQL = `CREATE TABLE IF NOT EXISTS comment (
+  CommentId INTEGER NOT NULL,
+  CommentUserId INTEGER NOT NULL,
+  Comment STRING,
+  MessageId INTEGER NOT NULL,
+  UserId INTEGER NOT NULL,
+  ConversationId INTEGER NOT NULL,
+  PRIMARY KEY(CommentId, MessageId, UserId, ConversationId),
+  CONSTRAINT fk_comment
+    FOREIGN KEY (MessageId, UserId, ConversationId) REFERENCES message(MessageId, SendUserId, ConversationId)
+    ON DELETE CASCADE
+);`

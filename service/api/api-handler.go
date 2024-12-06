@@ -60,6 +60,14 @@ func (rt *_router) Handler() http.Handler {
 	// -- Delete Message -- //
 	rt.router.DELETE("/profiles/:user/conversations/:conversation/messages/:message", rt.wrap(rt.deleteMessage, true))
 
+	// Comment routes
+	//
+	// -- Comment Message -- //
+	rt.router.PUT("/profiles/:user/conversations/:receiver/messages/:message/comments", rt.wrap(rt.commentMessage, true))
+	//
+	// -- Uncomment Message -- //
+	rt.router.DELETE("/profiles/:user/conversations/:conversation/messages/:message/comments/:comment", rt.wrap(rt.uncommentMessage, true))
+
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

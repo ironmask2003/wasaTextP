@@ -135,6 +135,25 @@ type AppDatabase interface {
 	// Delete message
 	DeleteMessage(userId int, convId int, messageId int) error
 
+	// -- COMMENT OPERATION -- //
+
+	// Create a comment
+	CreateComment(c Comment) (Comment, error)
+
+	// Check if a comment exist
+	ExistComment(messageId int, userId int, convId int, cUserId int) (bool, error)
+
+	// Get comment
+	GetComment(commentUserId int, msgId int, convId int, userId int) (Comment, error)
+
+	// Update comment
+	SetComment(commentId int, commentUserId int, msgId int, convId int, userId int, newComment string) error
+
+	ExistCommentWithId(commentId int, messageId int, userId int, convId int, cUserId int) (bool, error)
+
+	// Delete comment
+	DeleteComment(commentId int, commentUserId int, msgId int, convId int, userId int) error
+
 	Ping() error
 }
 
@@ -161,7 +180,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// Check of the number of table is corret (there are 5 tables)
 	// if the number of table is not 5, we creating missing tables
-	if tableSQL != 5 {
+	if tableSQL != 6 {
 
 		// Craetion of the user tabel
 		_, err = db.Exec(userTableSQL)
@@ -191,6 +210,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 		_, err = db.Exec(conversationTableSQL)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure conversation: %w", err)
+		}
+
+		// Creation of the comment table
+		_, err = db.Exec(commentTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure comment: %w", err)
 		}
 	}
 

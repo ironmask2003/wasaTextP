@@ -128,7 +128,7 @@ Content-Type: image/jpeg
 
 # CREATE CONVERSATION #
 
-PUT http://localhost:3000/profiles/1/conversations/3  HTTP/1.1
+PUT http://localhost:3000/profiles/1/conversations/2  HTTP/1.1
 Authorization: 1
 
 {
@@ -162,11 +162,33 @@ content-type: application/json
 ###
 
 # DELETE MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/1/messages/2  HTTP/1.1
+DELETE http://localhost:3000/profiles/1/conversations/1/messages/1  HTTP/1.1
 Authorization: 1
 
 ###
 
 # GET CONVERSATION #
-GET http://localhost:3000/profiles/3/conversations/1  HTTP/1.1
-Authorization: 3
+GET http://localhost:3000/profiles/1/conversations/1  HTTP/1.1
+Authorization: 1 
+
+###
+
+# COMMENT MESSAGE # 
+PUT http://localhost:3000/profiles/1/conversations/1/messages/2/comments HTTP/1.1
+Authorization: 1
+content-type: application/json
+
+{
+    "comment": "😅"
+}
+
+### 
+
+# UNCOMMENT MESSAGE #
+DELETE http://localhost:3000/profiles/1/conversations/1/messages/2/comments/2 HTTP/1.1
+Authorization: 1
+content-type: application/json
+
+{
+    "comment": "😅"
+}

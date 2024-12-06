@@ -32,3 +32,13 @@ type Conversation struct {
 	UserId         int `json:"userId"`
 	LastMessageId  int `json:"lastMessageId"`
 }
+
+// -- Structs for the Comment -- //
+type Comment struct {
+	CommentId      int    `json:"commentId"`
+	Comment        string `json:"comment"`
+	CommentUserId  int    `json:"commentUserId"`
+	MessageId      int    `json:"messageId"`
+	UserId         int    `json:"userId"`
+	ConversationId int    `json:"conversationId"`
+}
