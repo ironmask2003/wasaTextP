@@ -12,13 +12,13 @@ import (
 
 // Used for create the message in the db
 func (rt *_router) CreateMessageDB(m Message) (Message, error) {
-	// Create the user in the db
+	// Create the message in the db
 	msgDB, err := rt.db.CreateMessage(m.ConvertMessageForDB())
 	if err != nil {
 		return m, err
 	}
 
-	// Convert the user from the db to the user used in the api
+	// Convert the message from the db to the message used in the api
 	err = m.ConvertMessageFromDB(msgDB)
 	if err != nil {
 		return m, err
@@ -27,6 +27,7 @@ func (rt *_router) CreateMessageDB(m Message) (Message, error) {
 	return m, nil
 }
 
+// Check if the query has the msg id
 func check_query(query url.Values) (int, error) {
 	id_msg_response := 0
 	var err error

@@ -8,7 +8,10 @@ func (db *appdbimpl) GetConversationById(convId int, userId int) (Conversation, 
 	err := db.c.QueryRow(queryFindConversationById, convId, userId).Scan(&conv.ConversationId, &conv.GroupId)
 	if err != nil {
 		err = db.c.QueryRow(queryFindConversationUserById, convId, userId).Scan(&conv.ConversationId, &conv.SenderUserId)
-		return conv, err
+		if err != nil {
+			return conv, err
+		}
+		return conv, nil
 	}
 	return conv, nil
 }

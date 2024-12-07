@@ -19,7 +19,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Check if the user is authorized
 	if userId != ctx.UserId {
-		InternalServerError(w, err, ctx)
+		Forbidden(w, err, ctx, "Forbidden, the user is not authorized")
 		return
 	}
 
@@ -52,7 +52,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Take the content of the request
 	if err := json.NewDecoder(r.Body).Decode(&contentRequest); err != nil {
-		BadRequest(w, err, ctx, "Bad request, can't take the body of the request, check the struct")
+		BadRequest(w, err, ctx, "Bad request, can't take the body of the request, check the struct or the http reequst")
 		return
 	}
 

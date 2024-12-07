@@ -10,7 +10,5 @@ func (db *appdbimpl) GetMessage(userId int, convId int, messageId int) (Message,
 	if err != nil {
 		return msg, err
 	}
-
 	return msg, nil
-
 }

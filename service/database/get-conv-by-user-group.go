@@ -10,6 +10,5 @@ func (db *appdbimpl) GetConversationsByUserGroup(groupId int, userId int) (int, 
 	if err != nil {
 		return 0, err
 	}
-
 	return convId, nil
 }

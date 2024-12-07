@@ -149,6 +149,7 @@ type AppDatabase interface {
 	// Update comment
 	SetComment(commentId int, commentUserId int, msgId int, convId int, userId int, newComment string) error
 
+	// Checck if a commment exist with the id
 	ExistCommentWithId(commentId int, messageId int, userId int, convId int, cUserId int) (bool, error)
 
 	// Delete comment

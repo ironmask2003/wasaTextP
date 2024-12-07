@@ -5,9 +5,7 @@ var queryMemberGroup = `SELECT UserId, GroupId FROM user_group WHERE UserId = ? 
 
 // Function used to check id a user is member of a group
 func (db *appdbimpl) CheckMember(userId int, groupId int) (bool, error) {
-	var user int
-	var group int
-	err := db.c.QueryRow(queryMemberGroup, userId, groupId).Scan(&user, &group)
+	_, err := db.c.Exec(queryMemberGroup, userId, groupId)
 	if err != nil {
 		return false, err
 	}

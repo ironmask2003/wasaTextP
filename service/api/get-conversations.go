@@ -18,7 +18,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 
 	// Check if the user is authorized
 	if userId != ctx.UserId {
-		Forbidden(w, err, ctx, "Forbidden")
+		Forbidden(w, err, ctx, "Forbidden, the user is not authorized")
 		return
 	}
 
@@ -34,13 +34,12 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		var conv Conversation
 		prova, err := rt.db.GetConversationById(dbConv.ConversationId, userId)
 		if err != nil {
-			BadRequest(w, err, ctx, "Bad Request -> can't take the conversations"+strconv.Itoa(prova.ConversationId))
+			BadRequest(w, err, ctx, "Bad Request -> can't take the conversations")
 			return
 		}
 		err = conv.ConvertConversationFromDB(prova)
 		if err != nil {
-			ctx.Logger.WithError(err).Error("Error while converting the post")
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			InternalServerError(w, err, ctx)
 			return
 		}
 		convs[i] = conv

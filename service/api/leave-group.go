@@ -16,7 +16,7 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 	// Check if the user is authorized
 	if userId != ctx.UserId {
-		InternalServerError(w, err, ctx)
+		Forbidden(w, err, ctx, "Forbidden, the user is not authorized")
 		return
 	}
 	// Group ID
@@ -40,8 +40,7 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 	// Delete the user from the group
 	err = rt.db.LeaveGroup(userId, groupId)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("Error while deleting the user")
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		InternalServerError(w, err, ctx)
 		return
 	}
 

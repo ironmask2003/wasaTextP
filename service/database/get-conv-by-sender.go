@@ -10,6 +10,5 @@ func (db *appdbimpl) GetConversationsBySender(senderId int, userId int) (int, er
 	if err != nil {
 		return 0, err
 	}
-
 	return convId, nil
 }

@@ -10,7 +10,6 @@ import (
 var queryDeleteUser = "DELETE FROM user WHERE UserId = ?;"
 
 func (db *appdbimpl) DeleteUser(UserId int) error {
-
 	tx, err := db.c.BeginTx(db.ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		return err

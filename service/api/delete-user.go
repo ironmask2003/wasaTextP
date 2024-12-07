@@ -18,15 +18,14 @@ func (rt *_router) deleteUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Check if the user is authorized
 	if userId != userID {
-		http.Error(w, "Forbidden", http.StatusForbidden)
+		Forbidden(w, err, ctx, "Forbidden, the user is not authorized")
 		return
 	}
 
 	// Delete the user from the database
 	err = rt.db.DeleteUser(userId)
 	if err != nil {
-		ctx.Logger.WithError(err).Error("Error while deleting the user")
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		InternalServerError(w, err, ctx)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

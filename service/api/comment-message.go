@@ -62,7 +62,7 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 	if !c.IsEmoji() {
-		BadRequest(w, errors.New("The comment is not an emoji"), ctx, "Bad request -> the comment is not an emoji")
+		BadRequest(w, errors.New("The comment is not an emoji"), ctx, "Bad request")
 		return
 	}
 	c.CommentUserId = userId

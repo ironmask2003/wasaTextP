@@ -10,5 +10,4 @@ func (db *appdbimpl) SetComment(commentId int, commentUserId int, msgId int, con
 		return err
 	}
 	return nil
-
 }
