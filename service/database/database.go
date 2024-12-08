@@ -66,6 +66,9 @@ type AppDatabase interface {
 	// Get all members of a group
 	GetMembers(groupId int) ([]User, error)
 
+	// Search users by username
+	SearchUsers(userID int, search string) (User, error)
+
 	// Set new group name
 	SetGroupName(GroupId int, newName string) error
 

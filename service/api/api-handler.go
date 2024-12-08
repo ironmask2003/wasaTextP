@@ -20,6 +20,9 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Delete User -- //
 	rt.router.DELETE("/profiles/:user", rt.wrap(rt.deleteUser, true))
+	//
+	// -- Seacr User -- //
+	rt.router.GET("/profiles", rt.wrap(rt.searchUsers, true))
 
 	// Group routes
 	//

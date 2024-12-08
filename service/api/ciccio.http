@@ -185,10 +185,17 @@ content-type: application/json
 ### 
 
 # UNCOMMENT MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/1/messages/2/comments/2 HTTP/1.1
-Authorization: 1
+DELETE http://localhost:3000/profiles/2/conversations/1/messages/2/comments/1 HTTP/1.1
+Authorization: 2
 content-type: application/json
 
 {
     "comment": "😅"
 }
+
+###
+
+# GET SEARCH #
+GET http://localhost:3000/profiles
+    ?search=mattia
+Authorization: 1
