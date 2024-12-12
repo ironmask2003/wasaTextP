@@ -130,6 +130,9 @@ type AppDatabase interface {
 	// Update status of message
 	UpdateStatusMessage(msgId int, convId int) error
 
+	// Get max id of message table
+	GetMaxMessageId(convId int) (int, error)
+
 	// Delete the message
 	DeleteMessage(messageId int, convId int) error
 

@@ -31,9 +31,9 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
   PRIMARY KEY(MessageId, ConversationId),
   CONSTRAINT fk_message
     FOREIGN KEY (SenderUserId) REFERENCES user(UserId)
-    ON DELETE CASCADE
+      ON DELETE CASCADE
     FOREIGN KEY (ConversationId) REFERENCES conversation(ConversationId)
-    ON DELETE CASCADE
+      ON DELETE CASCADE
 );`
 
 /*
@@ -72,7 +72,6 @@ var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
   PRIMARY KEY(ConversationId)
   CONSTRAINT fk_conversation
     FOREIGN KEY (LastMessageId, ConversationId) REFERENCES message(MessageId, ConversationId)
-      ON DELETE CASCADE
 );`
 
 var conversationUsersSQL = `CREATE TABLE IF NOT EXISTS conversation_user (
@@ -81,6 +80,7 @@ var conversationUsersSQL = `CREATE TABLE IF NOT EXISTS conversation_user (
   PRIMARY KEY(ConversationId, UserId),
   CONSTRAINT fk_conversation_user
     FOREIGN KEY (ConversationId) REFERENCES conversation(ConversationId)
+      ON DELETE CASCADE
     FOREIGN KEY (UserId) REFERENCES user(UserId)
       ON DELETE CASCADE
 );`
