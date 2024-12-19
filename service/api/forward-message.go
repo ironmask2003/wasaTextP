@@ -39,8 +39,13 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Check if the user is in the Conversation
+<<<<<<< HEAD
 	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); !check && err != nil {
 		BadRequest(w, err, ctx, "The user is not in the conversation")
+=======
+	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); check || err != nil {
+		BadRequest(w, err, ctx, "The conversation already exist")
+>>>>>>> 779b51a (Modified table and function)
 		return
 	}
 
@@ -65,7 +70,11 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Check if the userId is in the other conversation
+<<<<<<< HEAD
 	if check, err := rt.db.CheckUserConv(userId, destConv.ConversationId); !check && err != nil {
+=======
+	if check, err := rt.db.CheckUserConv(userId, destConv.ConversationId); check || err != nil {
+>>>>>>> 779b51a (Modified table and function)
 		BadRequest(w, err, ctx, "The user isn't in the conversation")
 		return
 	}
@@ -98,6 +107,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		BadRequest(w, err, ctx, "Error insert message in the db")
 		return
+<<<<<<< HEAD
 	}
 
 	// Update last message in the conversation
@@ -105,6 +115,8 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		BadRequest(w, err, ctx, "Error updating last message of the conversation")
 		return
+=======
+>>>>>>> 779b51a (Modified table and function)
 	}
 
 	// Response
