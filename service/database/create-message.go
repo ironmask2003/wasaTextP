@@ -13,11 +13,7 @@ var queryAddMessage = `INSERT INTO message (MessageId, Message, Status, Conversa
 var queryGetLastIdMessage = `SELECT MAX(MessageId) FROM message WHERE ConversationId = ?`
 
 // Function used to get the last id in the conversation table
-<<<<<<< HEAD
 func (db *appdbimpl) GetMaxMessageId(convId int) (int, error) {
-=======
-func GetMaxMessageId(db *appdbimpl, convId int) (int, error) {
->>>>>>> 779b51a (Modified table and function)
 	var _maxID = sql.NullInt64{Int64: 0, Valid: false}
 	row, err := db.c.Query(queryGetLastIdMessage, convId)
 	if err != nil {
@@ -56,11 +52,7 @@ func (db *appdbimpl) CreateMessage(msg structs.Message) (structs.Message, error)
 	newMsg.SenderUserId = msg.SenderUserId
 
 	// Get the last id
-<<<<<<< HEAD
 	maxId, err := db.GetMaxMessageId(newMsg.ConversationId)
-=======
-	maxId, err := GetMaxMessageId(db, newMsg.ConversationId)
->>>>>>> 779b51a (Modified table and function)
 	if err != nil {
 		return structs.Message{}, err
 	}

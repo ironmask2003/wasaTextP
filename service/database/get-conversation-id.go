@@ -5,11 +5,7 @@ import (
 )
 
 // Query used to take the conversation from the db with the id
-<<<<<<< HEAD
 var queryGetConv = `SELECT ConversationId, IsGroup, COALESCE(LastMessageId, 0) AS LastMessageId FROM conversation WHERE ConversationId = ?`
-=======
-var queryGetConv = `SELECT ConversationId, IsGroup FROM conversation WHERE ConversationId = ?`
->>>>>>> 779b51a (Modified table and function)
 
 func (db *appdbimpl) GetConversationById(convId int) (structs.Conversation, error) {
 	var conv structs.Conversation

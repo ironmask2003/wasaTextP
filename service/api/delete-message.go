@@ -39,11 +39,7 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Check if the user is in the conversation
-<<<<<<< HEAD
-	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); !check && err != nil {
-=======
 	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); check || err != nil {
->>>>>>> 779b51a (Modified table and function)
 		BadRequest(w, err, ctx, "The user is not in the conversation")
 		return
 	}
@@ -63,7 +59,6 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-<<<<<<< HEAD
 	// Get the max id of the message table
 	maxId, err := rt.db.GetMaxMessageId(msg.ConversationId)
 	if err != nil {
@@ -104,7 +99,6 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-=======
 	// Delete the message from the db
 	err = rt.db.DeleteMessage(msg.MessageId, conv.ConversationId)
 	if err != nil {
@@ -118,6 +112,4 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		InternalServerError(w, err, "Error encoding the response", ctx)
 		return
 	}
-
->>>>>>> 779b51a (Modified table and function)
 }
