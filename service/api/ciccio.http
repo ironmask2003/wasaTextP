@@ -24,7 +24,7 @@ POST http://localhost:3000/session  HTTP/1.1
 content-type: application/json
 
 {
-    "username": "cizzo"
+    "username": "ciz"
 }
 
 ###
@@ -70,7 +70,7 @@ content-type: application/json
     "groupName": "fate",
     "users" : [
         {
-            "username": "cizzo"
+            "username": "ciz"
         },
         {
             "username": "mattia"
@@ -88,7 +88,7 @@ content-type: application/json
 {
     "users" : [
         {
-            "username": "cizzo"
+            "username": "eros"
         }
     ]
 }
@@ -96,8 +96,8 @@ content-type: application/json
 ### 
 
 # LEAVE GROUP #
-DELETE http://localhost:3000/profiles/5/groups/1  HTTP/1.1
-Authorization: 5
+DELETE http://localhost:3000/profiles/1/groups/1  HTTP/1.1
+Authorization: 1
 
 ###
 
@@ -128,11 +128,11 @@ Content-Type: image/jpeg
 
 # CREATE CONVERSATION #
 
-PUT http://localhost:3000/profiles/1/conversations/2  HTTP/1.1
+PUT http://localhost:3000/profiles/1/conversations/3  HTTP/1.1
 Authorization: 1
 
 {
-    "message" : "grande capo bianco"
+    "text" : "grande capo bianco"
 }
 
 ###
@@ -144,37 +144,37 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/2/conversations/1/messages  HTTP/1.1
-Authorization: 2
+POST http://localhost:3000/profiles/3/conversations/3/messages  HTTP/1.1
+Authorization: 3
 content-type: application/json 
 
 {
-    "message": "porco dio"
+    "text": "porco dio"
 }
 
 ### 
 
 # FORWARD MESSAGE #
-POST http://localhost:3000/profiles/1/conversations/1/messages/2?dest_conv=2 HTTP/1.1
+POST http://localhost:3000/profiles/1/conversations/3/messages/1?dest_conv=2 HTTP/1.1
 Authorization: 1
 content-type: application/json
 
 ###
 
 # DELETE MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/1/messages/1  HTTP/1.1
+DELETE http://localhost:3000/profiles/1/conversations/3/messages/1  HTTP/1.1
 Authorization: 1
 
 ###
 
 # GET CONVERSATION #
-GET http://localhost:3000/profiles/1/conversations/1  HTTP/1.1
+GET http://localhost:3000/profiles/1/conversations/2  HTTP/1.1
 Authorization: 1 
 
 ###
 
 # COMMENT MESSAGE # 
-PUT http://localhost:3000/profiles/1/conversations/1/messages/2/comments HTTP/1.1
+PUT http://localhost:3000/profiles/1/conversations/2/messages/2/comments HTTP/1.1
 Authorization: 1
 content-type: application/json
 
@@ -185,10 +185,6 @@ content-type: application/json
 ### 
 
 # UNCOMMENT MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/1/messages/2/comments/2 HTTP/1.1
+DELETE http://localhost:3000/profiles/1/conversations/2/messages/2/comments/1 HTTP/1.1
 Authorization: 1
 content-type: application/json
-
-{
-    "comment": "😅"
-}

@@ -116,6 +116,18 @@ type AppDatabase interface {
 	// Get all conversations of a user
 	GetUserConversations(userId int) ([]structs.Conversation, error)
 
+	// Update the group id of a conversation
+	UpdateGroupId(groupId int, conversationId int) error
+
+	// Get conversation by group id
+	GetConvGroup(groupId int) (int, error)
+
+	// Remove user from conversation
+	DeleteUserConv(userId int, convId int) error
+
+	// Delete conversation
+	DeleteConv(convId int) error
+
 	// -- MESSAGE OPERATION -- //
 
 	// Create new message
@@ -145,7 +157,7 @@ type AppDatabase interface {
 	GetCommentByUser(userId int, messageId int, convId int) (structs.Comment, error)
 
 	// Update comment
-	UpdateComment(commentId int, messageId int, conversationId int) error
+	UpdateComment(comment string, commentId int, messageId int, conversationId int) error
 
 	// Delete comment
 	DeleteComment(commentId int, messageId int, convId int) error

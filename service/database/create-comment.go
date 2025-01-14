@@ -60,7 +60,7 @@ func (db *appdbimpl) CreateComment(c structs.Comment) (structs.Comment, error) {
 	newComment.CommentId = maxId + 1
 
 	// Exec query
-	_, err = db.c.Exec(queryAddComment, newComment.MessageId, newComment.ConversationId, newComment.Comment, newComment.MessageId, newComment.ConversationId)
+	_, err = db.c.Exec(queryAddComment, newComment.CommentId, newComment.CommentUserId, newComment.Comment, newComment.MessageId, newComment.ConversationId)
 	if err != nil {
 		return structs.Comment{}, err
 	}

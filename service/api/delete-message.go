@@ -39,7 +39,7 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 	}
 
 	// Check if the user is in the conversation
-	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); check || err != nil {
+	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); !check || err != nil {
 		BadRequest(w, err, ctx, "The user is not in the conversation")
 		return
 	}

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
 	"strconv"
@@ -38,7 +37,7 @@ func (rt *_router) uncommentMessage(w http.ResponseWriter, r *http.Request, ps h
 	}
 
 	// Check if the user is in the conversation
-	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); check || err != nil {
+	if check, err := rt.db.CheckUserConv(userId, conv.ConversationId); !check || err != nil {
 		BadRequest(w, err, ctx, "The user isn't in the conversation")
 		return
 	}
@@ -82,9 +81,4 @@ func (rt *_router) uncommentMessage(w http.ResponseWriter, r *http.Request, ps h
 
 	// Response
 	w.WriteHeader(http.StatusNoContent)
-	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("User deleted"); err != nil {
-		InternalServerError(w, err, "Error encoding the response", ctx)
-		return
-	}
 }

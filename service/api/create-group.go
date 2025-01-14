@@ -76,6 +76,12 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 	w.WriteHeader(http.StatusCreated)
 
+	err = rt.db.UpdateGroupId(g.GroupId, c.ConversationId)
+	if err != nil {
+		BadRequest(w, err, ctx, "Bad request, can't update the group id")
+		return
+	}
+
 	// List of users to add in the group
 	user := body.Users
 

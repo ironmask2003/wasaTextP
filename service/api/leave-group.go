@@ -44,6 +44,20 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
+	// Get the id of the group conversation
+	convId, err := rt.db.GetConvGroup(groupId)
+	if err != nil {
+		InternalServerError(w, err, "Error while getting the conversation id", ctx)
+		return
+	}
+
+	// Delete user from the conversation
+	err = rt.db.DeleteUserConv(userId, convId)
+	if err != nil {
+		InternalServerError(w, err, "Error while deleting the user from the conversation", ctx)
+		return
+	}
+
 	users, err := rt.db.GetMembers(groupId)
 	if err != nil {
 		BadRequest(w, err, ctx, "Error while getting the members of the group")
@@ -54,6 +68,13 @@ func (rt *_router) leaveGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		err = rt.db.DeleteGroup(groupId)
 		if err != nil {
 			InternalServerError(w, err, "Error deleting the group", ctx)
+			return
+		}
+
+		// Delete conversation
+		err = rt.db.DeleteConv(convId)
+		if err != nil {
+			InternalServerError(w, err, "Error deleting the conversation", ctx)
 			return
 		}
 	}

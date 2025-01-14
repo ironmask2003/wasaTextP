@@ -4,7 +4,8 @@ package database
 var queryCheckConv = `
 		SELECT COUNT(convp.ConversationId)
 		FROM conversation_user convp, conversation_user conv, conversation c
-		WHERE convp.ConversationId = conv.ConversationId AND convp.UserId = ? AND conv.UserId = ? AND c.ConversationId = convp.ConversationId AND c.IsGroup = 0
+		WHERE convp.ConversationId = conv.ConversationId AND convp.UserId = ? AND conv.UserId = ? 
+      AND c.ConversationId = convp.ConversationId AND c.GroupId IS NULL
 	`
 var queryCheckUserConv = `
   SELECT ConversationId

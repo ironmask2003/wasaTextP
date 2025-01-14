@@ -1,9 +1,9 @@
 package database
 
 // Query used to update comment
-var queryUpdateComment = `UPDATE comment SET Coment = ? WHERE CommentId = ? AND MessageId = ? AND conversationId = ?`
+var queryUpdateComment = `UPDATE comment SET Comment = ? WHERE CommentId = ? AND MessageId = ? AND conversationId = ?`
 
-func (db *appdbimpl) UpdateComment(commentId int, messageId int, conversationId int) error {
-	_, err := db.c.Exec(queryUpdateComment, commentId, messageId, conversationId)
+func (db *appdbimpl) UpdateComment(comment string, commentId int, messageId int, conversationId int) error {
+	_, err := db.c.Exec(queryUpdateComment, comment, commentId, messageId, conversationId)
 	return err
 }

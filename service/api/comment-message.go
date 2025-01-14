@@ -78,7 +78,7 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 		}
 
 		// Update comment
-		err = rt.db.UpdateComment(comment.CommentId, msg.MessageId, conv.ConversationId)
+		err = rt.db.UpdateComment(comment.Comment, comment.CommentId, msg.MessageId, conv.ConversationId)
 		if err != nil {
 			BadRequest(w, err, ctx, "Error updating the comment")
 			return

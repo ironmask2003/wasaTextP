@@ -70,8 +70,5 @@ func (rt *_router) Handler() http.Handler {
 	// -- Uncomment Message -- //
 	rt.router.DELETE("/profiles/:user/conversations/:conv/messages/:message/comments/:comment", rt.wrap(rt.uncommentMessage, true))
 
-	// Special routes
-	rt.router.GET("/liveness", rt.liveness)
-
 	return rt.router
 }

@@ -58,6 +58,12 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 	// List of users
 	user := contentRequest.Users
 
+	convId, err := rt.db.GetConvGroup(groupId)
+	if err != nil {
+		InternalServerError(w, err, "Error getting the conversation id", ctx)
+		return
+	}
+
 	for i := 0; i < len(user); i++ {
 		userDB, err := rt.db.GetUserByName(user[i].Username)
 		if err != nil {
@@ -90,6 +96,13 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 			err = rt.db.AddUserGroup(user[i].UserId, groupId)
 			if err != nil {
 				InternalServerError(w, err, "Error adding the user in the group", ctx)
+				return
+			}
+
+			// Add to conversation
+			err = rt.db.AddUserConv(convId, user[i].UserId)
+			if err != nil {
+				InternalServerError(w, err, "Error adding the user in the conversation", ctx)
 				return
 			}
 		}

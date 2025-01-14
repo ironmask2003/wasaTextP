@@ -67,7 +67,7 @@ var userGroupTableSQL = `CREATE TABLE IF NOT EXISTS user_group (
  */
 var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
 	ConversationId INTEGER NOT NULL,
-  GroupId INTEGER NOT NULL,
+  GroupId INTEGER NULL,
   LastMessageId INTEGER,
   PRIMARY KEY(ConversationId)
   CONSTRAINT fk_conversation
