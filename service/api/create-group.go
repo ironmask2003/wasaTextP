@@ -58,7 +58,7 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Creation of the conversation
 	var c structs.Conversation
-	c.IsGroup = true
+	c.GroupId = g.GroupId
 	c, err = rt.db.CreateConversation(c)
 	if err != nil {
 		BadRequest(w, err, ctx, "Can't create the conversation")

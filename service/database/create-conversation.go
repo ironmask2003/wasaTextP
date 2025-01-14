@@ -7,7 +7,7 @@ import (
 )
 
 // Query used to create a conversation
-var queryAddConversation = `INSERT INTO conversation (ConversationId, IsGroup) VALUES (?, ?);`
+var queryAddConversation = `INSERT INTO conversation (ConversationId, GroupId) VALUES (?, ?);`
 
 // Query used to take the max id from the conversation table
 var queryGetMaxConvId = `SELECT MAX(ConversationId) FROM conversation;`
@@ -45,7 +45,7 @@ func (db *appdbimpl) CreateConversation(c structs.Conversation) (structs.Convers
 	// New conversation
 	var newConv structs.Conversation
 	// Set the value of the new conversation
-	newConv.IsGroup = c.IsGroup
+	newConv.GroupId = c.GroupId
 	newConv.LastMessageId = c.LastMessageId
 	// Get the id of the new conversation
 	maxID, err := GetMaxConversationId(db)
@@ -55,14 +55,14 @@ func (db *appdbimpl) CreateConversation(c structs.Conversation) (structs.Convers
 	// Set the id of the new conversation
 	newConv.ConversationId = maxID + 1
 	// Execute the query to create the conversation
-	_, err = db.c.Exec(queryAddConversation, newConv.ConversationId, newConv.IsGroup)
+	_, err = db.c.Exec(queryAddConversation, newConv.ConversationId, newConv.GroupId)
 	if err != nil {
 		return structs.Conversation{}, err
 	}
 	// Return the new conversation
 	return structs.Conversation{
 		ConversationId: newConv.ConversationId,
-		IsGroup:        newConv.IsGroup,
+		GroupId:        newConv.GroupId,
 		LastMessageId:  newConv.LastMessageId,
 	}, nil
 }

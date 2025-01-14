@@ -63,7 +63,7 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 
 	// New conversation
 	var c structs.Conversation
-	c.IsGroup = false
+	c.GroupId = 0
 
 	// Create the conversation in the db
 	c, err = rt.db.CreateConversation(c)

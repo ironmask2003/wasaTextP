@@ -73,6 +73,8 @@ var conversationTableSQL = `CREATE TABLE IF NOT EXISTS conversation (
   CONSTRAINT fk_conversation
     FOREIGN KEY (LastMessageId, ConversationId) REFERENCES message(MessageId, ConversationId)
       ON DELETE CASCADE
+    FOREIGN KEY (GroupId) REFERENCES group_t(GroupId)
+      ON DELETE CASCADE
 );`
 
 var conversationUsersSQL = `CREATE TABLE IF NOT EXISTS conversation_user (
