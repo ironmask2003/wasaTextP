@@ -1,8 +1,10 @@
 package api
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -64,11 +66,37 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Take the message from the request body
-	err = json.NewDecoder(r.Body).Decode(&msg)
+	// Check if the size of the image is less than 5MB
+	err = r.ParseMultipartForm(5 << 20)
 	if err != nil {
-		BadRequest(w, err, ctx, "Error decoding the request body")
+		BadRequest(w, err, ctx, "Image too big")
 		return
+	}
+
+	// Take the text of the message
+	msg.Text = r.FormValue("text")
+
+	// Access the file from the request
+	file, _, err := r.FormFile("image")
+
+	// Check if the request have a file
+	if err == nil {
+		// Read the file
+		data, err := io.ReadAll(file) // In data we have the image file taked in the request
+		if err != nil {
+			InternalServerError(w, err, "Error reading the image file", ctx)
+			return
+		}
+
+		// Check if the file is a jpeg
+		fileType := http.DetectContentType(data)
+		if fileType != "image/jpeg" {
+			http.Error(w, "Bad Request wrong file type", http.StatusBadRequest)
+			return
+		}
+		defer func() { err = file.Close() }()
+
+		msg.Photo = base64.StdEncoding.EncodeToString(data)
 	}
 
 	// Set the id of the conversation

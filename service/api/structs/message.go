@@ -11,4 +11,5 @@ type Message struct {
 	Status         string    `json:"status"`
 	SenderUserId   int       `json:"senderUserId"`
 	ConversationId int       `json:"conversationId"`
+	Photo          string    `json:"photo"`
 }

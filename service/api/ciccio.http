@@ -144,13 +144,20 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/3/conversations/3/messages  HTTP/1.1
-Authorization: 3
-content-type: application/json 
+POST http://localhost:3000/profiles/1/conversations/3/messages  HTTP/1.1
+Authorization: 1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-{
-    "text": "porco dio"
-}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+ciao
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="image.jpeg"
+Content-Type: image/jpeg
+
+< ./image.jpeg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ### 
 

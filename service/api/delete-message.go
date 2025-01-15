@@ -92,13 +92,6 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("Message deleted"); err != nil {
-		InternalServerError(w, err, "Error encoding the response", ctx)
-		return
-	}
-
 	// Delete the message from the db
 	err = rt.db.DeleteMessage(msg.MessageId, conv.ConversationId)
 	if err != nil {
@@ -106,7 +99,7 @@ func (rt *_router) deleteMessage(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "plain/text")
 	if err := json.NewEncoder(w).Encode("Message deleted"); err != nil {
 		InternalServerError(w, err, "Error encoding the response", ctx)

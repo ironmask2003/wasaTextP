@@ -92,6 +92,7 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	newMsg.SenderUserId = userId
 	newMsg.Text = msg.Text
 	newMsg.Status = "Sended"
+	newMsg.Photo = msg.Photo
 
 	// Create the message in the new conversation
 	newMsg, err = rt.db.CreateMessage(newMsg)

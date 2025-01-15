@@ -28,6 +28,7 @@ var messageTableSQL = `CREATE TABLE IF NOT EXISTS message (
   Status TEXT,
   ConversationId INTEGER NOT NULL,
   SenderUserId INTEGER NOT NULL,
+  Photo STRING,
   PRIMARY KEY(MessageId, ConversationId),
   CONSTRAINT fk_message
     FOREIGN KEY (SenderUserId) REFERENCES user(UserId)

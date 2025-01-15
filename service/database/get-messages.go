@@ -5,7 +5,7 @@ import (
 )
 
 // Query used to get the messages of a conversation from the database
-var queryGetMessages = `SELECT MessageId, Message, Status, SenderUserId, SendTime FROM message WHERE ConversationId = ?`
+var queryGetMessages = `SELECT MessageId, Message, Status, SenderUserId, SendTime, COALESCE(Photo, "") FROM message WHERE ConversationId = ?`
 
 func (db *appdbimpl) GetMessages(convId int) ([]structs.Message, error) {
 	// Create a new slice of messages
@@ -26,7 +26,7 @@ func (db *appdbimpl) GetMessages(convId int) ([]structs.Message, error) {
 		// Create a new message
 		var message structs.Message
 		// Scan the values of the message
-		err := rows.Scan(&message.MessageId, &message.Text, &message.Status, &message.SenderUserId, &message.SendTime)
+		err := rows.Scan(&message.MessageId, &message.Text, &message.Status, &message.SenderUserId, &message.SendTime, &message.Photo)
 		if err != nil {
 			return nil, err
 		}

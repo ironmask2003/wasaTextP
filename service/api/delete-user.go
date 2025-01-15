@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -33,9 +32,4 @@ func (rt *_router) deleteUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Response
 	w.WriteHeader(http.StatusNoContent)
-	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("User deleted"); err != nil {
-		InternalServerError(w, err, "Error encoding the response", ctx)
-		return
-	}
 }

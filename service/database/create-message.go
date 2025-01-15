@@ -7,7 +7,7 @@ import (
 )
 
 // Query used to add the message in the database
-var queryAddMessage = `INSERT INTO message (MessageId, Message, Status, ConversationId, SenderUserId) VALUES (?, ?, ?, ?, ?)`
+var queryAddMessage = `INSERT INTO message (MessageId, Message, Status, ConversationId, SenderUserId, Photo) VALUES (?, ?, ?, ?, ?, ?)`
 
 // Query used to get the last id in the message table
 var queryGetLastIdMessage = `SELECT MAX(MessageId) FROM message WHERE ConversationId = ?`
@@ -50,6 +50,7 @@ func (db *appdbimpl) CreateMessage(msg structs.Message) (structs.Message, error)
 	newMsg.ConversationId = msg.ConversationId
 	newMsg.Status = msg.Status
 	newMsg.SenderUserId = msg.SenderUserId
+	newMsg.Photo = msg.Photo
 
 	// Get the last id
 	maxId, err := db.GetMaxMessageId(newMsg.ConversationId)
@@ -61,7 +62,7 @@ func (db *appdbimpl) CreateMessage(msg structs.Message) (structs.Message, error)
 	newMsg.MessageId = maxId + 1
 
 	// Execute the query to create the conversation
-	_, err = db.c.Exec(queryAddMessage, newMsg.MessageId, newMsg.Text, newMsg.Status, newMsg.ConversationId, newMsg.SenderUserId)
+	_, err = db.c.Exec(queryAddMessage, newMsg.MessageId, newMsg.Text, newMsg.Status, newMsg.ConversationId, newMsg.SenderUserId, newMsg.Photo)
 	if err != nil {
 		return structs.Message{}, err
 	}
@@ -74,5 +75,6 @@ func (db *appdbimpl) CreateMessage(msg structs.Message) (structs.Message, error)
 		Status:         newMsg.Status,
 		SenderUserId:   newMsg.SenderUserId,
 		ConversationId: newMsg.ConversationId,
+		Photo:          newMsg.Photo,
 	}, nil
 }
