@@ -63,7 +63,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag User
-  /users:
+  /profiles:
     parameters:
       - name: searched_user
         in: query
@@ -89,7 +89,7 @@ paths:
         "404": { $ref: "#/components/responses/NotFound" }
         "500": { $ref: "#/components/responses/InternalServerError" }
 
-  /users/{user}/username:
+  /profiles/{user}/username:
     parameters:
       - $ref: "#/components/parameters/user"
     put:
@@ -119,7 +119,7 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
-  /users/{user}/photo:
+  /profiles/{user}/photo:
     parameters:
       - $ref: "#/components/parameters/user"
     put:
@@ -148,7 +148,7 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
-  /users/{user}:
+  /profiles/{user}:
     parameters:
       - $ref: "#/components/parameters/user"
     delete:
@@ -170,7 +170,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
 
   # Tag Group
-  /users/{user}/groups:
+  /profiles/{user}/groups:
     parameters:
       - $ref: "#/components/parameters/user"
     post:
@@ -200,7 +200,7 @@ paths:
               schema: { $ref: "#/components/schemas/Group" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/groups/{group}:
+  /profiles/{user}/groups/{group}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"
@@ -248,7 +248,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/groups/{group}/groupname:
+  /profiles/{user}/groups/{group}/groupname:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"
@@ -279,7 +279,7 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
-  /users/{user}/groups/{group}/grouphoto:
+  /profiles/{user}/groups/{group}/grouphoto:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/group"
@@ -311,7 +311,7 @@ paths:
         "403": { $ref: "#/components/responses/Forbidden" }
 
   # Tag Conversation
-  /users/{user}/conversations:
+  /profiles/{user}/conversations:
     parameters:
       - $ref: "#/components/parameters/user"
     get:
@@ -332,7 +332,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{dest_user_id}:
+  /profiles/{user}/conversations/{dest_user_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -380,7 +380,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Message
-  /users/{user}/conversations/{dest_user_id}/messages:
+  /profiles/{user}/conversations/{dest_user_id}/messages:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -411,7 +411,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{dest_user_id}/messages/{message}:
+  /profiles/{user}/conversations/{dest_user_id}/messages/{message}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -460,7 +460,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Comment
-  /users/{user}/conversations/{dest_user_id}/messages/{message}/reactions:
+  /profiles/{user}/conversations/{dest_user_id}/messages/{message}/reactions:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -486,7 +486,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /users/{user}/conversations/{dest_user_id}/messages/{message}/reactions/{reaction}:
+  /profiles/{user}/conversations/{dest_user_id}/messages/{message}/reactions/{reaction}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
