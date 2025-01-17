@@ -36,10 +36,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/profiles/:user/groups/:group", rt.wrap(rt.addToGroup, true))
 	//
 	// -- Set new name to the group -- //
-	rt.router.PUT("/profiles/:user/groups/:group/name", rt.wrap(rt.setGroupName, true))
+	rt.router.PUT("/profiles/:user/groups/:group/groupname", rt.wrap(rt.setGroupName, true))
 	//
 	// -- Set new photo group -- //
-	rt.router.PUT("/profiles/:user/groups/:group/photo", rt.wrap(rt.setGroupPhoto, true))
+	rt.router.PUT("/profiles/:user/groups/:group/grouphoto", rt.wrap(rt.setGroupPhoto, true))
 
 	// -- Conversation Routes -- //
 	//
@@ -65,10 +65,10 @@ func (rt *_router) Handler() http.Handler {
 	// Comment Routes
 	//
 	// -- Comment Message -- //
-	rt.router.PUT("/profiles/:user/conversations/:dest/messages/:message/comments", rt.wrap(rt.commentMessage, true))
+	rt.router.PUT("/profiles/:user/conversations/:dest/messages/:message/reactions", rt.wrap(rt.commentMessage, true))
 	//
 	// -- Uncomment Message -- //
-	rt.router.DELETE("/profiles/:user/conversations/:conv/messages/:message/comments/:comment", rt.wrap(rt.uncommentMessage, true))
+	rt.router.DELETE("/profiles/:user/conversations/:conv/messages/:message/reactions/:reaction", rt.wrap(rt.uncommentMessage, true))
 
 	return rt.router
 }

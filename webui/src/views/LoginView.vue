@@ -16,9 +16,9 @@ export default {
         let response = await this.$axios.post('/session', {
           username: this.username,
         });
-        sessionStorage.userID = response.data.user.id;
-        sessionStorage.username = response.data.user.username;
-        sessionStorage.token = response.data.token;
+        sessionStorage.userID = response.data.userId;
+        sessionStorage.username = response.data.username;
+        sessionStorage.token = response.data.userId;
         this.$router.push("/home");
         this.$emit('login-success');
       } catch (e) {

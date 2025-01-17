@@ -58,10 +58,42 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
+	// Informazione di chi ha mandato il messaggio
+	// Stuct used for the response
+	type MessageResponse struct {
+		Message structs.Message `json:"message"`
+		User    User            `json:"user"`
+		TimeMsg string          `json:"timeMsg"`
+	}
+
+	response := make([]MessageResponse, len(messages))
+	for idx, msg := range messages {
+		sender, err := rt.db.GetUserById(msg.SenderUserId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Error taking the user from the user table")
+			return
+		}
+		var user User
+		err = user.ConvertUserFromDB(sender)
+		if err != nil {
+			BadRequest(w, err, ctx, "Bad request")
+			return
+		}
+
+		// Get the time of the message
+		timemsg := msg.SendTime.Format("15:04 - 02/01/2006")
+
+		var rsp MessageResponse
+		rsp.Message = msg
+		rsp.User = user
+		rsp.TimeMsg = timemsg
+		response[idx] = rsp
+	}
+
 	// Write the response
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	if err = json.NewEncoder(w).Encode(messages); err != nil {
+	if err = json.NewEncoder(w).Encode(response); err != nil {
 		InternalServerError(w, err, "Error encoding response", ctx)
 		return
 	}

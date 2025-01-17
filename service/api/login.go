@@ -51,7 +51,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// If doesn't exist create the user
 	if !exist {
-		_, err := rt.CreateUser(user)
+		user, err = rt.CreateUser(user)
 		if err != nil {
 			InternalServerError(w, err, "Can't add user in the user table", ctx)
 			return
@@ -75,7 +75,7 @@ func (rt *_router) doLogin(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// Respose
 	w.Header().Set("content-type", "application/json")
-	if err := json.NewEncoder(w).Encode(user.UserId); err != nil {
+	if err := json.NewEncoder(w).Encode(user); err != nil {
 		InternalServerError(w, err, "Error encoding the response", ctx)
 		return
 	}

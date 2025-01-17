@@ -332,7 +332,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /profiles/{user}/conversations/{dest}:
+  /profiles/{user}/conversations/{dest_user_id}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -380,7 +380,7 @@ paths:
         "500": { $ref: "#/components/responses/InternalServerError" }
 
   # Tag Message
-  /profiles/{user}/conversations/{conv}/messages:
+  /profiles/{user}/conversations/{dest_user_id}/messages:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
@@ -411,7 +411,7 @@ paths:
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
         "500": { $ref: "#/components/responses/InternalServerError" }
-  /profiles/{user}/conversations/{conv}/messages/{message}:
+  /profiles/{user}/conversations/{dest_user_id}/messages/{message}:
     parameters:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"

@@ -77,7 +77,7 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 	msg.Text = r.FormValue("text")
 
 	// Access the file from the request
-	file, _, err := r.FormFile("image")
+	file, _, err := r.FormFile("photo")
 
 	// Check if the request have a file
 	if err == nil {

@@ -144,7 +144,7 @@ Authorization: 1
 ### 
 
 # SEND MESSAGE #
-POST http://localhost:3000/profiles/1/conversations/3/messages  HTTP/1.1
+POST http://localhost:3000/profiles/1/conversations/1/messages  HTTP/1.1
 Authorization: 1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -162,26 +162,26 @@ Content-Type: image/jpeg
 ### 
 
 # FORWARD MESSAGE #
-POST http://localhost:3000/profiles/1/conversations/3/messages/1?dest_conv=2 HTTP/1.1
+POST http://localhost:3000/profiles/1/conversations/1/messages/2?dest_conv=2 HTTP/1.1
 Authorization: 1
 content-type: application/json
 
 ###
 
 # DELETE MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/3/messages/1  HTTP/1.1
+DELETE http://localhost:3000/profiles/1/conversations/2/messages/2  HTTP/1.1
 Authorization: 1
 
 ###
 
 # GET CONVERSATION #
-GET http://localhost:3000/profiles/1/conversations/2  HTTP/1.1
+GET http://localhost:3000/profiles/1/conversations/1  HTTP/1.1
 Authorization: 1 
 
 ###
 
 # COMMENT MESSAGE # 
-PUT http://localhost:3000/profiles/1/conversations/2/messages/2/comments HTTP/1.1
+PUT http://localhost:3000/profiles/1/conversations/2/messages/3/comments HTTP/1.1
 Authorization: 1
 content-type: application/json
 
@@ -192,6 +192,6 @@ content-type: application/json
 ### 
 
 # UNCOMMENT MESSAGE #
-DELETE http://localhost:3000/profiles/1/conversations/2/messages/2/comments/1 HTTP/1.1
+DELETE http://localhost:3000/profiles/1/conversations/2/messages/3/comments/1 HTTP/1.1
 Authorization: 1
 content-type: application/json

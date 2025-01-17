@@ -125,6 +125,9 @@ type AppDatabase interface {
 	// Remove user from conversation
 	DeleteUserConv(userId int, convId int) error
 
+	// Get users of a conversation
+	GetUsersConv(convId int, userId int) (User, error)
+
 	// Delete conversation
 	DeleteConv(convId int) error
 
