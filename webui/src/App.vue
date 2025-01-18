@@ -11,11 +11,11 @@ export default {
 
     }
   },
-  methos: {
+  methods: {
     handleLoginSuccess() {
       this.isLoggedIn = true;
-      this.path = "/user/" + sessionStorage.userID
       window.location.reload();
+      this.path = "/user/" + sessionStorage.userID;
     },
     logout() {
       sessionStorage.clear();
@@ -60,6 +60,14 @@ export default {
                 </svg>
                 Search
               </RouterLink>
+            </li>
+            <li class="nav-item m-2" v-if="isLoggedIn">
+              <a class="nav-link" @click="logout">
+                <svg class="feather">
+                  <use href="/feather-sprite-v4.29.0.svg#log-out" />
+                </svg>
+                Logout
+              </a>
             </li>
             <li class="nav-item" v-else>
               <RouterLink to="/session" class="nav-link">

@@ -19,6 +19,7 @@ export default {
         sessionStorage.userID = response.data.userId;
         sessionStorage.username = response.data.username;
         sessionStorage.token = response.data.userId;
+        window.location.reload();
         this.$router.push("/home");
         this.$emit('login-success');
       } catch (e) {
