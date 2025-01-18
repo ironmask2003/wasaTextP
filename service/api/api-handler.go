@@ -68,7 +68,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/profiles/:user/conversations/:dest/messages/:message/reactions", rt.wrap(rt.commentMessage, true))
 	//
 	// -- Uncomment Message -- //
-	rt.router.DELETE("/profiles/:user/conversations/:conv/messages/:message/reactions/:reaction", rt.wrap(rt.uncommentMessage, true))
+	rt.router.DELETE("/profiles/:user/conversations/:conv/messages/:message/reactions/:comment", rt.wrap(rt.uncommentMessage, true))
 
 	return rt.router
 }

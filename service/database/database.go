@@ -165,6 +165,9 @@ type AppDatabase interface {
 	// Delete comment
 	DeleteComment(commentId int, messageId int, convId int) error
 
+	// Get all comments of a message
+	GetMsgComments(msgId int, convId int) ([]structs.RspComment, error)
+
 	Ping() error
 }
 

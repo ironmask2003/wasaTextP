@@ -15,6 +15,7 @@ export default {
     handleLoginSuccess() {
       this.isLoggedIn = true;
       this.path = "/user/" + sessionStorage.userID
+      window.location.reload();
     },
     logout() {
       sessionStorage.clear();

@@ -12,6 +12,15 @@ type Comment struct {
 	CommentUserId  int    `json:"commnetUserId"`
 }
 
+type RspComment struct {
+	CommentId       int    `json:"commentId"`
+	Comment         string `json:"comment"`
+	MessageId       int    `json:"messageId"`
+	ConversationId  int    `json:"conversationId"`
+	CommentUserId   int    `json:"commentUserId"`
+	CommentUsername string `json:"commentUsername"`
+}
+
 // Function used to check if the comment is valid
 func (c Comment) IsValid() bool {
 	// Decodifica il primo carattere Unicode nella stringa

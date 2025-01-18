@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -18,8 +17,6 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		BadRequest(w, err, ctx, "Can't take the user id from the endpoint")
 		return
 	}
-
-	fmt.Println("userId: ", userId)
 
 	// Check if the user is authorized
 	if checkAuth(w, userId, ctx) != nil {

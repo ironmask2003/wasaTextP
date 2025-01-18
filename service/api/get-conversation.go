@@ -61,9 +61,10 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 	// Informazione di chi ha mandato il messaggio
 	// Stuct used for the response
 	type MessageResponse struct {
-		Message structs.Message `json:"message"`
-		User    User            `json:"user"`
-		TimeMsg string          `json:"timeMsg"`
+		Message  structs.Message      `json:"message"`
+		Comments []structs.RspComment `json:"comments"`
+		User     User                 `json:"user"`
+		TimeMsg  string               `json:"timeMsg"`
 	}
 
 	response := make([]MessageResponse, len(messages))
@@ -83,10 +84,17 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 		// Get the time of the message
 		timemsg := msg.SendTime.Format("15:04 - 02/01/2006")
 
+		comments, err := rt.db.GetMsgComments(msg.MessageId, conv.ConversationId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Can't take the comments of the message")
+			return
+		}
+
 		var rsp MessageResponse
 		rsp.Message = msg
 		rsp.User = user
 		rsp.TimeMsg = timemsg
+		rsp.Comments = comments
 		response[idx] = rsp
 	}
 

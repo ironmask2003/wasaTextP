@@ -1,5 +1,6 @@
 <script setup>
 import Modal from '../components/ModalConv.vue';
+import Commments from '../components/ModalComments.vue';
 </script>
 
 <script>
@@ -15,7 +16,10 @@ export default {
       proPic64: localStorage.photo,
       some_data: [],
       searchModalIsVisible: false,
+      commentModalIsVisible: false,
       messageToFordward: null,
+      messageToComment: null,
+      comments: null,
     }
   },
   methods: {
@@ -63,6 +67,16 @@ export default {
         });
 
     },
+    async deleteMessage(msgId) {
+      this.errormsg = null;
+      this.$axios.delete(`/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${msgId}`, { headers: { 'Authorization': sessionStorage.token } })
+        .then(() => {
+          this.getConversation();
+        })
+        .catch(e => {
+          this.errormsg = e.toString();
+        });
+    },
     async sendMessage() {
       this.errormsg = null;
       const formData = new FormData();
@@ -80,6 +94,11 @@ export default {
           this.errormsg = e.toString();
         });
     },
+    handleCommentModalToggle(cmt, commentsMsg) {
+      this.messageToComment = cmt;
+      this.comments = commentsMsg;
+      this.commentModalIsVisible = !this.commentModalIsVisible;
+    },
     handleSearchModalToggle(msg) {
       this.messageToFordward = msg;
       this.searchModalIsVisible = !this.searchModalIsVisible;
@@ -90,7 +109,7 @@ export default {
       this.$router.push("/");
       return;
     }
-    if (this.convId != undefined || !isNaN(this.convId)) {
+    if (this.convId != undefined && !isNaN(this.convId)) {
       this.getConversation()
     }
   }
@@ -105,7 +124,14 @@ export default {
         <img :src="`data:image/jpg;base64,${proPic64}`">
       </div>
       <h1 class="h1">{{ this.userToSend }}</h1>
-      <Modal :show="searchModalIsVisible" :msg="messageToFordward" @close="handleSearchModalToggle" title="search">
+      <Commments :show="commentModalIsVisible" :comments="comments" :msg="messageToComment"
+        @close="handleCommentModalToggle" title="comments">
+        <template>
+          <h3>Comments</h3>
+        </template>
+      </Commments>
+      <Modal :show="searchModalIsVisible" :msg="messageToFordward" @close="handleSearchModalToggle"
+        title="conversations">
         <template v-slot:header>
           <h3>Conversations</h3>
         </template>
@@ -135,12 +161,20 @@ export default {
       <p v-if="response.message.text !== 'null' || response.message.photo !== ''">
         {{ response.timeMsg }}
       </p>
-      <button type="button" class="btn btn-sm btn-outline-secondary" @click="handleSearchModalToggle(response.message)">
-        Forward Message
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary">
-        Delete message
-      </button>
+      <div class="btn-group me-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+          @click="handleSearchModalToggle(response.message)">
+          Forward Message
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+          @click="deleteMessage(response.message.messageId)">
+          Delete message
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+          @click="handleCommentModalToggle(response.message, response.comments)">
+          Comment message
+        </button>
+      </div>
       <hr v-if="response.message.text !== 'null' || response.message.photo !== ''">
     </div>
     <div class="input-group">

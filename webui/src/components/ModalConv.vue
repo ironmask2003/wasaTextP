@@ -1,12 +1,6 @@
 <script>
 import { RouterLink } from 'vue-router';
-/*
- * Levare la barra ricerca
- * eseguire getConversations
- * mostrare lista conversazioni
- *
- * Sistemare messageId prende l'ultimo e non il selezionato
- * */
+
 export default {
   props: {
     show: Boolean,
@@ -31,10 +25,6 @@ export default {
       this.$emit('close');
     },
     async forwardMessage(destConvId, user) {
-      if (this.convId == undefined || isNaN(this.convId)) {
-        this.errormsg = "Invalid conversation";
-        return;
-      }
       // Set the local storage
       this.errormsg = null;
       const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}?dest_conv=${destConvId}`;
