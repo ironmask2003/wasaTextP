@@ -8,7 +8,6 @@ const router = createRouter({
   routes: [
     { path: '/', redirect: '/session' },
     { path: '/home', component: HomeView },
-    { path: '/search', component: HomeView },
     { path: '/session', component: LoginView },
     { path: '/conversation', component: ChatView },
     { path: '/conversation/:convId', component: ChatView },

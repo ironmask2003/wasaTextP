@@ -49,9 +49,6 @@ type AppDatabase interface {
 	// Change the username of the user
 	SetMyUsername(UserId int, newUsername string) error
 
-	// Delete a user in the user table
-	DeleteUser(UserId int) error
-
 	// Check if the username is alredy used
 	CheckIfExist(username string) (bool, error)
 

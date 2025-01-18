@@ -20,9 +20,6 @@ func (rt *_router) Handler() http.Handler {
 	//
 	// -- Set my Photo -- //
 	rt.router.PUT("/profiles/:user/photo", rt.wrap(rt.setMyPhoto, true))
-	//
-	// -- Delete User -- //
-	rt.router.DELETE("/profiles/:user", rt.wrap(rt.deleteUser, true))
 
 	// Group routes
 	//

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -45,6 +46,9 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 		InternalServerError(w, err, "Error reading the image file", ctx)
 		return
 	}
+
+	response := base64.StdEncoding.EncodeToString(data)
+
 	// Check if the file is a jpeg
 	fileType := http.DetectContentType(data)
 	if fileType != "image/jpeg" {
@@ -67,10 +71,17 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 		InternalServerError(w, err, "Error cropping the image", ctx)
 	}
 
+	type Response struct {
+		Photo string `json:"photo"`
+	}
+
+	var res Response
+	res.Photo = response
+
 	// Resposne
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("Photo profile changed"); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error encoding the response", ctx)
 		return
 	}

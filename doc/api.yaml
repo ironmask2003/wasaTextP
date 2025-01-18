@@ -148,26 +148,6 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
-  /profiles/{user}:
-    parameters:
-      - $ref: "#/components/parameters/user"
-    delete:
-      tags: [User]
-      operationId: deleteUser
-      security:
-        - bearerAuth: []
-      summary: delete user
-      description: |
-        Delete user
-      responses:
-        "200":
-          description: The photo was uploaded succesfully
-          content:
-            plain/text:
-              schema: { $ref: "#/components/schemas/Completed" }
-        "400": { $ref: "#/components/responses/BadRequest" }
-        "401": { $ref: "#/components/responses/Unauthorized" }
-        "403": { $ref: "#/components/responses/Forbidden" }
 
   # Tag Group
   /profiles/{user}/groups:
