@@ -71,7 +71,7 @@ export default {
         return
     }
     try{
-        let _ = await this.$axios.put(`/profiles/${this.userID}/username`, { username: this.newUsername }, { headers: { 'Authorization': `${sessionStorage.token}` } })
+        let _ = await this.$axios.put(`/profiles/${sessionStorage.userID}/username`, { username: this.newUsername }, { headers: { 'Authorization': `${sessionStorage.token}` } })
         this.username = this.newUsername;
         this.handleUpdateNameToggle();
     } catch (e) {
@@ -92,6 +92,8 @@ export default {
     },
     handleLoginSuccess(){
       this.isLoggedIn = true;
+      this.username = sessionStorage.username;
+      this.photo = sessionStorage.photo;
     }
   }
 }
@@ -119,7 +121,7 @@ export default {
             <template v-slot:body>
                 <form class="username-form">
                     <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
-                    <input type="text" v-model="this.newUsername" placeholder="New username" />
+                    <input type="text" v-model="newUsername" placeholder="New username" />
                     <button type="submit" @click.prevent="updateUsername">Update</button>
                 </form>
             </template>
@@ -189,6 +191,10 @@ export default {
               </button>
               Set new profile picture
 						</li>
+            <li class="nav-item m-2" v-if="isLoggedIn">
+              <img :src="`data:image/jpg;base64,${photo}`" alt="Profile Picture" class="profile-picture"/>
+              <span class="username">{{ username }}</span>
+            </li>
           </ul>
         </div>
       </nav>
@@ -201,4 +207,16 @@ export default {
 </template>
 
 <style>
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: bold;
+}
 </style>

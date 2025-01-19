@@ -62,6 +62,7 @@ export default {
         localStorage.photo = response.data.group.photo;
         localStorage.users = JSON.stringify(response.data.members);
         this.closeModal();
+        window.location.reload();
         this.$router.push(`/groups/${response.data.group.groupId}`);
       } catch (e) {
         this.errorMsg = e.toString

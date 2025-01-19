@@ -14,7 +14,7 @@ export default {
       username: sessionStorage.username,
     }
   },
-  emits: ['login-success'],
+  emits: ['login-success', 'username-changed'],
   methods: {
     async getConversations() {
       this.errormsg = null;
@@ -118,9 +118,6 @@ export default {
     <div v-else>
       <p>Start a conversation</p>
     </div>
-
-      <img :src="`data:image/jpg;base64,${this.photo}`" alt="Profile Picture" class="profile-picture" />
-      <span class="username">{{ this.username }}</span>
 
     <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
   </div>
