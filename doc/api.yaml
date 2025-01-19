@@ -445,7 +445,7 @@ paths:
       - $ref: "#/components/parameters/user"
       - $ref: "#/components/parameters/conv"
       - $ref: "#/components/parameters/msg"
-    post:
+    put:
       tags: [Comment]
       operationId: commentMessage
       security:
