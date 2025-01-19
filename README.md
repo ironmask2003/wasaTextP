@@ -79,3 +79,24 @@ Per controllare il database andate nel file `./cmd/webapi/load-configuration.go`
 ```bash
 litelens-tui -p <nome_file>.db
 ```
+
+## TEST con il docker
+
+Per il test del frontend utilizzate docker dalla VM del prof.
+Create due file Dockerfile.frontend e Dockerfile.backend come nel mio progetto, e copiate dai miei file il loro contenuo.
+
+Aprite il terminale, spostatevi nella cartella del progetto con i due file appena creati e eseuguite i seguenti comandi:
+```bash
+docker build -t wasa-text-frontend:latest -f Dcokerfile.frontend .
+docker build -t wasa-text-backend:latest -f Dockerfile.backend .
+```
+Al posto di wasa-text-frontend potete mettere un nome a vostra scelta, basta che vi ricordare il nome che avete scelto per il frontend e per il backend. 
+
+Dopo eseguite i seguenti comandi, su due pagine del terminale per avviare il sito sia lato backend che lato frontend eseguite i due comandi seguenti:
+```bash
+docker run -it --rm -p 3000:3000 wasa-text-backend:latest 
+docker run -it --rm -p 8080:80 wasa-text-frontend:latest
+```
+(IMPORTANTE: Devono essere entrambi eseguiti per il funzionamento del sito, se eseguite delle modifiche sia lato backend che frontend bloccate i due processi con ctrl + c e rieseguite i comandi sopra `docker build ...` per il re-build del sito).
+
+A questo punto aprite il browser e digitate localhost:8080 e vi appare il sito web.
