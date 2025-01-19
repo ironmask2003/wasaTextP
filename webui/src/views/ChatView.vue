@@ -15,6 +15,7 @@ export default {
       photo: null,
       proPic64: localStorage.photo,
       some_data: [],
+      isGroup: localStorage.users ? true : false,
       searchModalIsVisible: false,
       commentModalIsVisible: false,
       messageToFordward: null,
@@ -103,6 +104,9 @@ export default {
       this.messageToFordward = msg;
       this.searchModalIsVisible = !this.searchModalIsVisible;
     },
+    goToGroupInfo(){
+      this.$router.push(`/groups/${this.userIdToSend}`);
+    }
   },
   mounted() {
     if (!sessionStorage.token) {
@@ -123,7 +127,12 @@ export default {
       <div class="top-profile-container">
         <img :src="`data:image/jpg;base64,${proPic64}`">
       </div>
-      <h1 class="h1">{{ this.userToSend }}</h1>
+      <div v-if="isGroup">
+        <h1 class="h1 clickable" @click="goToGroupInfo">{{ this.userToSend }}</h1>
+      </div>
+      <div v-else>
+        <h1 class="h1">{{this.userToSend}}</h1>
+      </div>
       <Commments :show="commentModalIsVisible" :comments="comments" :msg="messageToComment"
         @close="handleCommentModalToggle" title="comments">
         <template>
@@ -200,5 +209,15 @@ export default {
 .msg_photo {
   width: 25%;
   height: 25%;
+}
+
+.clickable {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.clickable:hover {
+  color: darkblue;
 }
 </style>

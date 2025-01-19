@@ -108,10 +108,49 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		}
 	}
 
+	type Response struct {
+		Group   Group  `json:"group"`
+		Members []User `json:"members"`
+	}
+
+	var res Response
+	group, err := rt.db.GetGroupById(groupId)
+	if err != nil {
+		InternalServerError(w, err, "Error getting the group", ctx)
+		return
+	}
+	err = res.Group.ConvertGroupFromDB(group)
+	if err != nil {
+		InternalServerError(w, err, "Error converting the group from the database struct", ctx)
+		return
+	}
+
+	members, err := rt.db.GetMembers(groupId)
+	if err != nil {
+		InternalServerError(w, err, "Error getting the members of the group", ctx)
+		return
+	}
+
+	// Convert the members from the db to the user used in the api
+	for i := 0; i < len(members); i++ {
+		userDB, err := rt.db.GetUserById(members[i].UserId)
+		if err != nil {
+			InternalServerError(w, err, "Error getting the user from the user table", ctx)
+			return
+		}
+		var user User
+		err = user.ConvertUserFromDB(userDB)
+		if err != nil {
+			InternalServerError(w, err, "Error converting the user from the database struct", ctx)
+			return
+		}
+		res.Members = append(res.Members, user)
+	}
+
 	// Response
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("Member added"); err != nil {
+	w.Header().Set("content-type", "application/json")
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error econding the response", ctx)
 		return
 	}

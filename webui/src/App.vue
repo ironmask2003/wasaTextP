@@ -85,10 +85,6 @@ export default {
     handleSearchModalToggle() {
 			this.searchModalIsVisible = !this.searchModalIsVisible;
 		},
-    handleLoginSuccess() {
-      this.isLoggedIn = true;
-      window.location.reload();
-    },
     logout() {
       sessionStorage.clear();
       this.isLoggedIn = false;

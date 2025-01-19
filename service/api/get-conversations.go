@@ -36,6 +36,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 		Conversation structs.Conversation `json:"conversation"`
 		User         User                 `json:"user"`
 		Group        Group                `json:"group"`
+		GroupUsers   []User               `json:"groupUsers"`
 		Message      structs.Message      `json:"message"`
 		SenderUser   User                 `json:"senderUser"`
 	}
@@ -107,7 +108,7 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 			// Get last message
 			message, err := rt.db.GetMessageById(conv.LastMessageId, conv.ConversationId)
 			if err != nil {
-				BadRequest(w, err, ctx, "Error taking the message")
+				BadRequest(w, err, ctx, "Error taking the message dio")
 				return
 			}
 
@@ -124,9 +125,32 @@ func (rt *_router) getMyConversations(w http.ResponseWriter, r *http.Request, ps
 				return
 			}
 
+			users, err := rt.db.GetMembers(conv.GroupId)
+			if err != nil {
+				BadRequest(w, err, ctx, "Error taking the members of the group")
+				return
+			}
+
+			var groupUsers []User
+			for i := 0; i < len(users); i++ {
+				userDB, err := rt.db.GetUserById(users[i].UserId)
+				if err != nil {
+					BadRequest(w, err, ctx, "Error taking the user from the user table")
+					return
+				}
+				var user User
+				err = user.ConvertUserFromDB(userDB)
+				if err != nil {
+					BadRequest(w, err, ctx, "Error converting the user from the database struct")
+					return
+				}
+				groupUsers = append(groupUsers, user)
+			}
+
 			response[idx] = Response{
 				Conversation: conv,
 				Group:        group,
+				GroupUsers:   groupUsers,
 				Message:      message,
 				SenderUser:   senderUser,
 			}

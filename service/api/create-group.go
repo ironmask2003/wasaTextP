@@ -129,9 +129,37 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 	}
 
+	type Response struct {
+		Group          Group `json:"group"`
+		ConversationId int   `json:"conversationId"`
+	}
+
+	var res Response
+	res.Group = g
+	res.ConversationId = c.ConversationId
+
+	msg := structs.Message{
+		SenderUserId:   userId,
+		ConversationId: c.ConversationId,
+		Text:           "Group created",
+	}
+
+	msg, err = rt.db.CreateMessage(msg)
+	if err != nil {
+		BadRequest(w, err, ctx, "Can't create the message")
+		return
+	}
+
+	// Update last message of a conversation
+	err = rt.db.UpdateLastMessage(msg.MessageId, c.ConversationId)
+	if err != nil {
+		BadRequest(w, err, ctx, "Error updating last message")
+		return
+	}
+
 	// Respose
 	w.Header().Set("content-type", "application/json")
-	if err := json.NewEncoder(w).Encode(g); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error encoding response", ctx)
 		return
 	}

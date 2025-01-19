@@ -80,10 +80,23 @@ func (rt *_router) setGroupPhoto(w http.ResponseWriter, r *http.Request, ps http
 		InternalServerError(w, err, "Error in the crop", ctx)
 	}
 
+	response, err := imageFunctions.ImageToBase64(imageFunctions.SetDefaultPhotoGroup(groupId))
+	if err != nil {
+		BadRequest(w, err, ctx, "Error taking new picture from storage")
+		return
+	}
+
+	type Response struct {
+		Photo string `json:"photo"`
+	}
+
+	var res Response
+	res.Photo = response
+
 	// Resposne
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("content-type", "plain/text")
-	if err := json.NewEncoder(w).Encode("Photo changed"); err != nil {
+	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error encoding the response", ctx)
 		return
 	}

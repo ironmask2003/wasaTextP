@@ -45,7 +45,7 @@ export default {
   <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
   <div class="login-container">
     <form @submit.prevent="doLogin">
-      <h1>WasaPhoto</h1>
+      <h1>WasaText</h1>
       <input type="text" v-model="username" placeholder="Enter your username" />
       <button type="submit">Login</button>
     </form>

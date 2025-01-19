@@ -26,6 +26,11 @@ func (db appdbimpl) GetMembers(groupId int) ([]User, error) {
 			return nil, err
 		}
 
+		user, err = db.GetUserById(user.UserId)
+		if err != nil {
+			return nil, err
+		}
+
 		users = append(users, user)
 	}
 
