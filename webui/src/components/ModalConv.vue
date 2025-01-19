@@ -20,7 +20,6 @@ export default {
       localStorage.userID = user.userId;
       localStorage.username = user.username;
       localStorage.photo = user.photo;
-      window.location.reload();
       this.$emit('close');
     },
     async forwardMessage(destConvId, user) {

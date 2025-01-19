@@ -1,9 +1,7 @@
-<script setup>
-import Modal from '../components/ModalConv.vue';
-import Commments from '../components/ModalComments.vue';
-</script>
-
 <script>
+import Modal from '../components/ModalConv.vue';
+import Comments from '../components/ModalComments.vue';
+
 export default {
   data() {
     return {
@@ -23,6 +21,7 @@ export default {
       comments: null,
     }
   },
+  emits: ['login-success'],
   methods: {
     async handleFileChange(event) {
       this.errorMsg = "";
@@ -116,7 +115,8 @@ export default {
     if (this.convId != undefined && !isNaN(this.convId)) {
       this.getConversation()
     }
-  }
+  },
+  components: { Modal, Comments },
 }
 </script>
 
@@ -133,12 +133,12 @@ export default {
       <div v-else>
         <h1 class="h1">{{this.userToSend}}</h1>
       </div>
-      <Commments :show="commentModalIsVisible" :comments="comments" :msg="messageToComment"
+      <Comments :show="commentModalIsVisible" :comments="comments" :msg="messageToComment"
         @close="handleCommentModalToggle" title="comments">
         <template>
           <h3>Comments</h3>
         </template>
-      </Commments>
+      </Comments>
       <Modal :show="searchModalIsVisible" :msg="messageToFordward" @close="handleSearchModalToggle"
         title="conversations">
         <template v-slot:header>

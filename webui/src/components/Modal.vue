@@ -22,7 +22,6 @@ export default {
       localStorage.username = username;
       localStorage.photo = photo;
       this.searchText = "";
-      window.location.reload();
       this.$emit('close');
     },
     async filterUsers() {

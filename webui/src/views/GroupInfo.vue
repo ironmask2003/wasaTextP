@@ -1,9 +1,7 @@
-<script setup>
+<script>
 import AddGroup from '../components/ModalAddGroup.vue';
 import Modal from '../components/Modal.vue';
-</script>
 
-<script>
 export default {
   data() {
     return {
@@ -28,6 +26,7 @@ export default {
       groupMembers: JSON.parse(localStorage.users),
     };
   },
+  emits: ['login-success'],
   methods: {
     async handleFileChange(event) {
       this.errorMsg = "";
@@ -109,6 +108,7 @@ export default {
       this.searchVisible = !this.searchVisible;
     },
   },
+  components: {AddGroup, Modal},
 }
 </script>
 

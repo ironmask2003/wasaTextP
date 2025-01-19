@@ -89,6 +89,9 @@ export default {
       sessionStorage.clear();
       this.isLoggedIn = false;
       this.$router.push("/");
+    },
+    handleLoginSuccess(){
+      this.isLoggedIn = true;
     }
   }
 }
@@ -98,21 +101,41 @@ export default {
 
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#/">Wasa Text</a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
   </header>
 
   <div class="container-fluid">
     <div class="row">
-      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" v-show="isLoggedIn">
         <div class="position-sticky pt-3 sidebar-sticky">
           <Modal :show="searchModalIsVisible" @close="handleSearchModalToggle" title="search">
 						<template v-slot:header>
 							<h3>Users</h3>
 						</template>
 					</Modal>
+          <Modal :show="updateNameModalIsVisible" @close="handleUpdateNameToggle" title = "username">
+            <template v-slot:header>
+                <h3>Update Username</h3>
+            </template>
+            <template v-slot:body>
+                <form class="username-form">
+                    <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
+                    <input type="text" v-model="this.newUsername" placeholder="New username" />
+                    <button type="submit" @click.prevent="updateUsername">Update</button>
+                </form>
+            </template>
+          </Modal>
+          <Modal :show="updateProPicIsVisible" @close="handleUpdateProPicToggle" title = "photo">
+            <template v-slot:header>
+                <h3>Update Profile Picture</h3>
+            </template>
+            <template v-slot:body>
+                <form class="username-form">
+                    <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
+                    <input type="file" ref="file" accept=".jpg,.jpeg" @change="handleFileChange"/>
+                    <button type="submit" @click.prevent="updateProPic">Update</button>
+                </form>
+            </template>
+          </Modal>
           <h6
             class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
             <span>General</span>
@@ -150,37 +173,7 @@ export default {
                 Login
               </RouterLink>
             </li>
-          </ul>
-
-          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-						<span>Secondary menu</span>
-					</h6>
-          <Modal :show="updateNameModalIsVisible" @close="handleUpdateNameToggle" title = "username">
-            <template v-slot:header>
-                <h3>Update Username</h3>
-            </template>
-            <template v-slot:body>
-                <form class="username-form">
-                    <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
-                    <input type="text" v-model="this.newUsername" placeholder="New username" />
-                    <button type="submit" @click.prevent="updateUsername">Update</button>
-                </form>
-            </template>
-          </Modal>
-          <Modal :show="updateProPicIsVisible" @close="handleUpdateProPicToggle" title = "photo">
-            <template v-slot:header>
-                <h3>Update Profile Picture</h3>
-            </template>
-            <template v-slot:body>
-                <form class="username-form">
-                    <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
-                    <input type="file" ref="file" accept=".jpg,.jpeg" @change="handleFileChange"/>
-                    <button type="submit" @click.prevent="updateProPic">Update</button>
-                </form>
-            </template>
-          </Modal>
-					<ul class="nav flex-column">
-						<li class="nav-item m-2" v-if="isLoggedIn">
+            <li class="nav-item m-2" v-if="isLoggedIn">
               <button @click="handleUpdateNameToggle">
                 <svg class="feather">
                     <use href="/feather-sprite-v4.29.0.svg#edit" />
@@ -196,45 +189,16 @@ export default {
               </button>
               Set new profile picture
 						</li>
-					</ul>
-          <footer class="user-footer" v-if="isLoggedIn">
-            <img :src="`data:image/jpg;base64,${this.photo}`" alt="Profile Picture" class="profile-picture" />
-            <span class="username">{{ username }}</span>
-          </footer>
+          </ul>
         </div>
       </nav>
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <RouterView />
-      </main>
+				<RouterView @login-success="handleLoginSuccess"/>
+			</main>
     </div>
   </div>
 </template>
 
 <style>
-.user-footer {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.user-footer .profile-picture {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-  object-fit: cover;
-}
-
-.user-footer .username {
-  font-size: 14px;
-  font-weight: bold;
-}
 </style>

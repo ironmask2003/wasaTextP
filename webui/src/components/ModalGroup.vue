@@ -1,6 +1,4 @@
 <script>
-import { RouterLink } from 'vue-router';
-
 export default {
   props: {
     show: Boolean,
@@ -93,7 +91,6 @@ export default {
       this.filteredUsers = this.users;
     }
   },
-  components: { RouterLink }
 }
 </script>
 

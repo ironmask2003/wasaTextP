@@ -1,4 +1,4 @@
-FROM node:lts as builder
+FROM node:18.12.0 as builder
 
 ### Copy Vue.js code
 WORKDIR /app
@@ -7,7 +7,6 @@ COPY webui webui
 ### Build Vue.js into plain HTML/CSS/JS
 WORKDIR /app/webui
 RUN yarn run build-prod
-
 
 ### Create final container
 FROM nginx:stable

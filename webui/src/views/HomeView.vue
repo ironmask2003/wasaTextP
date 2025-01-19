@@ -1,9 +1,7 @@
-<script setup>
+<script>
 import Modal from '../components/Modal.vue';
 import Group from '../components/ModalGroup.vue';
-</script>
 
-<script>
 export default {
   data: function () {
     return {
@@ -12,8 +10,11 @@ export default {
       searchModalIsVisible: false,
       createGroupModalIsVisible: false,
       users: [],
+      photo: sessionStorage.photo,
+      username: sessionStorage.username,
     }
   },
+  emits: ['login-success'],
   methods: {
     async getConversations() {
       this.errormsg = null;
@@ -52,7 +53,8 @@ export default {
       return;
     }
     this.getConversations();
-  }
+  },
+  components: {Modal, Group}
 }
 </script>
 
@@ -117,8 +119,25 @@ export default {
       <p>Start a conversation</p>
     </div>
 
+      <img :src="`data:image/jpg;base64,${this.photo}`" alt="Profile Picture" class="profile-picture" />
+      <span class="username">{{ this.username }}</span>
+
     <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
   </div>
 </template>
 
-<style></style>
+<style>
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: bold;
+}
+</style>

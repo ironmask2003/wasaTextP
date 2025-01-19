@@ -14,7 +14,6 @@ export default {
   },
   methods: {
     closeModal() {
-      window.location.reload();
       this.$emit('close');
     },
     async commentMessage(emoji) {

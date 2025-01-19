@@ -7,9 +7,8 @@ import GroupInfo from '../views/GroupInfo.vue'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/session' },
+    { path: '/', component: LoginView },
     { path: '/home', component: HomeView },
-    { path: '/session', component: LoginView },
     { path: '/conversation', component: ChatView },
     { path: '/conversation/:convId', component: ChatView },
     { path: '/groups/:groupId', component: GroupInfo }
