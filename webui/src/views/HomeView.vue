@@ -90,7 +90,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="some_data.lenght === 0">
+    <div v-if="some_data.length !== 0">
     <div class="conversations" v-for="response in some_data" :key="response.conversation.conversationId">
       <div v-if="response.group.groupName == '' ">
         <button v-if="response.message.photo == ''" type="button" class="btn btn-sm btn-outline-primary"
