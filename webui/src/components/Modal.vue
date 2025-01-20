@@ -1,32 +1,44 @@
+<!-- 
+
+Modale utilizzato per la ricerca di utenti
+
+-->
+
 <script>
 import { RouterLink } from 'vue-router';
 
 export default {
+  // Props passati al componente
   props: {
-    show: Boolean,
-    users: Array,
-    title: String,
+    show: Boolean,  // Utilizzato per mostrare o nascondere il modal
+    users: Array, // Lista di utenti da filtrare
+    title: String,  // Titolo del modale
   },
   data() {
     return {
-      searchText: "",
       errorMsg: "",
+
+      // Variabile utilizzate per la ricerca degli utenti
+      searchText: "",
+
+      // Utilizzato per la verifica dell'username inserito
       usernameValidation: new RegExp('^\\w{0,16}$'),
+
+      // Lisat di utenti filtrati in base all'username inserito
       filteredUsers: [],
     };
   },
   methods: {
-    closeModal(userToSend, username, photo) {
-      localStorage.clear();
-      localStorage.userID = userToSend;
-      localStorage.username = username;
-      localStorage.photo = photo;
+    // Funzione utilizzata per chiudere il modale salvando in localStorage l'utente selezionato con cui aprire un conversazione
+    closeModal() {
       this.searchText = "";
       window.location.reload();
       this.$emit('close');
     },
+    // Funzione utilizzata per filtrare gli utenti in base all'username inserito
     async filterUsers() {
       this.errorMsg = "";
+      // Lista degli utenti
       this.filteredUsers = this.users;
       if (this.searchText.length > 0) {
         if (this.searchText.length > 16 || !this.usernameValidation.test(this.searchText)) {
@@ -37,8 +49,10 @@ export default {
 
         if (this.title === "search") {
           try {
+            // Effettua una richiesta GET al server per ottenere gli utenti in base alla ricerca effettuata
             const url = `/profiles?username=${this.searchText}`;
             let response = await this.$axios.get(url, { headers: { 'Authorization': `${sessionStorage.token}` } });
+            // In base al risultato della GET assegna la lista di utenti filtrati
             if (response.data == null) {
               this.filteredUsers = [];
               return;
@@ -52,7 +66,15 @@ export default {
           this.filteredUsers = this.users.filter(user => user.username.toLowerCase().includes(this.searchText.toLowerCase()));
         }
       }
-    }
+    },
+    // Funzione utilizzara per selezionare l'utente con cui aprire una conversazione
+    async selectUser(userToSend, username, photo) {
+      localStorage.clear();
+      localStorage.userID = userToSend;
+      localStorage.username = username;
+      localStorage.photo = photo;
+      closeModal();
+    },
   },
   watch: {
     searchText() {
@@ -82,13 +104,15 @@ export default {
 
           <div class="modal-body">
             <slot name="body">
+              <!-- Input per l'inserimento dell'utente da cercare -->
               <div class="search-input">
                 <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
                 <input type="text" v-model="searchText" placeholder="Search" />
               </div>
+              <!-- Risultato della ricerca -->
               <div class="search-results">
                 <div v-for="user in filteredUsers" :key="user.userId"
-                  @click="closeModal(user.userId, user.username, user.photo)">
+                  @click="selectUser(user.userId, user.username, user.photo)">
                   <RouterLink :to="'/conversation'" class="custom-link" replace force>
                     <div class="user">
                       <p>{{ user.username }}</p>

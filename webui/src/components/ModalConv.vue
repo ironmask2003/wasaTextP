@@ -1,5 +1,15 @@
-<script>
+<!--
 
+Modale utilizzato per la ricerca di conversazioni per inoltrare un messaggio
+
+L'utente loggato può:
+- visualizzare la lista di conversazioni
+- inoltrare il messaggio alla conversazione selezionata
+
+-->
+
+
+<script>
 export default {
   props: {
     show: Boolean,
@@ -9,35 +19,46 @@ export default {
   data() {
     return {
       errorMsg: "",
+
+      // Lisata delle conversazioni dell'utente
       convs: [],
+
+      // Id della conversazione selezionata
       convId: parseInt(this.$route.params.convId),
     };
   },
   methods: {
-    closeModal(user) {
-      // Cleare localStorae
-      localStorage.clear();
-      localStorage.userID = user.userId;
-      localStorage.username = user.username;
-      localStorage.photo = user.photo;
+    // Chiude il modale
+    closeModal() {
+      this.convs = [];
       window.location.reload();
       this.$emit('close');
     },
+    // Funzione utilizzata per inoltrare un messaggio alla conversazione selezionata
     async forwardMessage(destConvId, user) {
       // Set the local storage
       this.errormsg = null;
+      // Effettua una richiesta POST al server per inoltrare il messaggio alla conversazione selezionata
       const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}?dest_conv=${destConvId}`;
       this.$axios.post(url, {}, { headers: { 'Authorization': sessionStorage.token } })
         .then(() => {
-          this.closeModal(user);
+          // Setta il local storage
+          localStorage.clear();
+          localStorage.userID = user.userId;
+          localStorage.username = user.username;
+          localStorage.photo = user.photo;
+          // Chiude il modale
+          this.closeModal();
         })
         .catch(e => {
           this.errormsg = e.toString();
         });
     },
+    // Funzione utilizzata per ottenere le conversazioni dell'utente loggato
     async getMyConversations() {
       this.errormsg = null;
       try {
+        // Effettua una richiesta GET al server per ottenere le conversazioni dell'utente loggato
         let response = await this.$axios.get(`/profiles/${sessionStorage.userID}/conversations`, { headers: { 'Authorization': sessionStorage.token } });
         this.convs = response.data;
       } catch (e) {
@@ -92,9 +113,7 @@ export default {
 <style>
 .custom-link {
   color: inherit;
-  /* This will make the link have the same color as the surrounding text */
   text-decoration: none;
-  /* This will remove the underline */
 }
 
 .modal-mask {

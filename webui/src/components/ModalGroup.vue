@@ -1,3 +1,15 @@
+<!-- 
+
+Modale utilizzato per la creazione di un gruppo
+
+L'utente loggato può:
+- selezionare un nome per il gruppo
+- cercare un utente specifico per aggiungerlo al gruppo
+- visualizzare la lista di utenti aggiunti
+- creare un gruppo con gli utenti selezionati
+
+-->
+
 <script>
 export default {
   props: {
@@ -7,22 +19,34 @@ export default {
   },
   data() {
     return {
-      searchText: "",
-      groupName: "",
       errorMsg: "",
+
+      // Utilizzato per la ricerca degli utentei da aggiungere al gruppo
+      searchText: "",
+
+      // Utilizzate per dare il nome al gruppo da creare
+      groupName: "",
+
+      // Utilizzato per la verifica del nome del gruppo e dell'username inserito
       usernameValidation: new RegExp('^\\w{0,16}$'),
+
+      // Lista degli utenti cercati
       filteredUsers: [],
+
+      // Username dell'utente loggato
       owner: sessionStorage.username,
       selectedUsers: [], // Lista di utenti selezionati
     };
   },
   methods: {
+    // Funzione utilizzata per chiudere il modale
     closeModal() {
       this.searchText = "";
       this.groupName = "";
       this.selectedUsers = [];
       this.$emit('close');
     },
+    // Funzione utilizzata per la ricerca di utenti da aggiungere al gruppo
     async filterUsers() {
       this.errorMsg = "";
       this.filteredUsers = this.users;
@@ -36,8 +60,10 @@ export default {
 
         if (this.title === "search") {
           try {
+            // Effettua una richiesta GET al server per ottenere gli utenti in base alla ricerca effettuata
             const url = `/profiles?username=${this.searchText}`;
             let response = await this.$axios.get(url, { headers: { 'Authorization': `${sessionStorage.token}` } });
+            // In base al risultato della GET assegna la lista di utenti filtrati
             if (response.data == null) {
               this.filteredUsers = [];
               return;
@@ -52,32 +78,40 @@ export default {
         }
       }
     },
+    // Funzione utilizzata per creare un gruppo con gli utenti selezionati
     async createGroup() {
-      if(this.groupName.length < 3 || this.groupName.length > 16){
+      // Controlla se il nome del gruppo è valido
+      if (this.groupName.length < 3 || this.groupName.length > 16) {
         this.errorMsg = "Invalid group name, it must contains min 3 characters and max 16 characters";
         return;
       }
       try {
+        // Effettua una richiesta POST al server per creare un gruppo passando il nome del gruppo e la lista degli utenti
         let response = await this.$axios.post(`/profiles/${sessionStorage.userID}/groups`, {
           groupName: this.groupName,
           users: this.selectedUsers,
         }, { headers: { 'Authorization': `${sessionStorage.token}` } });
+        // Assegna al localStorage l'id del gruppo e il nome
         localStorage.clear();
         localStorage.userID = response.data.group.GroupId;
         localStorage.username = response.data.group.groupName;
         localStorage.photo = response.data.group.photo;
+        // Chiude il modale
         this.closeModal();
+        // Reinderizza alla pagina della conversazione
         this.$router.push(`/conversations/${response.data.conversation.conversationId}`);
       } catch (e) {
         this.errorMsg = e.toString
       }
     },
+    // Seleziona l'utente da aggiungere alla lista degli utenti del gruppo
     selectUser(user) {
       // Controlla se l'utente è già nella lista
       if (!this.selectedUsers.find(u => u.username === user.username)) {
         this.selectedUsers.push(user); // Aggiungi utente selezionato
       }
     },
+    // Rimuove un utente dalla lista degli utenti del gruppo
     removeUser(username) {
       // Rimuove l'utente dalla lista selezionata
       this.selectedUsers = this.selectedUsers.filter(user => user.username !== username);
@@ -134,7 +168,7 @@ export default {
               <!-- Lista di utenti selezionati -->
               <div class="selected-users">
                 <h4>Selected Users:</h4>
-                <span class="selected-user">{{owner}}</span>
+                <span class="selected-user">{{ owner }}</span>
                 <div v-for="user in selectedUsers" :key="user.userId" class="selected-user">
                   <span>{{ user.username }}</span>
                   <button v-if="user.username !== owner" @click="removeUser(user.username)">Remove</button>

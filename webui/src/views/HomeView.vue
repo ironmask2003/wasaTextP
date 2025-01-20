@@ -1,3 +1,15 @@
+<!--
+Pagina princiaple del sito in cui vengono mostrate le conversazioni dell'utente loggato.
+
+In questa pagina l'utente può:
+- visualizzare le conversazioni con altri utenti o gruppi
+- aggiornare la lista delle conversazioni
+- creare un nuovo gruppo
+- creare una nuova conversazione con un utente
+
+-->
+
+
 <script>
 import Modal from '../components/Modal.vue';
 import Group from '../components/ModalGroup.vue';

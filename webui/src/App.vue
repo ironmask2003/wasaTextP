@@ -1,3 +1,18 @@
+<!-- 
+
+Pagina principale dell'applicazione, contiene la navbar con i link alle pagine principali 
+dell'applicazione e i modali per l'aggiornamento dell'username e dell'immagine del profilo dell'utente loggato.
+
+L'utente può:
+- visualizzare le conversazioni con altri utenti o gruppi andando alla home 
+- cercare un utente con cui aprire una nuova conversazione
+- aggiornare l'username
+- aggiornare l'immagine del profilo
+- effettuare il logout
+- visualizzare la sua immagine del profilo e il suo username
+
+-->
+
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import Modal from './components/Modal.vue'

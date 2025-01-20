@@ -1,3 +1,13 @@
+<!-- 
+
+Modale utilizzato per aggiungere utenti al gruppo
+
+L'utente può:
+- cercare un utente specifico per aggiungerlo al gruppo
+- visualizzare la lista di utenti aggiunti
+
+-->
+
 <script>
 export default {
   props: {
@@ -7,21 +17,33 @@ export default {
   },
   data() {
     return {
-      searchText: "",
       errorMsg: "",
+
+      // Utilizzato per la ricerca degli utenti da aggiungere al gruppo
+      searchText: "",
+
+      // Utilizzato per la verifica dell'username inserito e del nome del gruppo
       usernameValidation: new RegExp('^\\w{0,16}$'),
+
+      // Lista degli utenti filtrati in base alla ricerca effettuata
       filteredUsers: [],
+
+      // Username dell'utente loggato
       owner: sessionStorage.username,
+
+      // Id del gruppo a cui aggiungere gli utenti
       groupId: localStorage.userID,
       selectedUsers: [], // Lista di utenti selezionati
     };
   },
   methods: {
+    // Chiude il modale
     closeModal() {
       this.searchText = "";
       this.selectedUsers = [];
       this.$emit('close');
     },
+    // Funzione utilizzata per la ricerca degli utenti da aggiungere al gruppo
     async filterUsers() {
       this.errorMsg = "";
       this.filteredUsers = this.users;
@@ -35,8 +57,10 @@ export default {
 
         if (this.title === "search") {
           try {
+            // Effettua una richiesta GET al server per ottenere gli utenti in base alla ricerca effettuata
             const url = `/profiles?username=${this.searchText}`;
             let response = await this.$axios.get(url, { headers: { 'Authorization': `${sessionStorage.token}` } });
+            // In base al risultato della GET assegna la lista degli utenti
             if (response.data == null) {
               this.filteredUsers = [];
               return;
@@ -51,29 +75,36 @@ export default {
         }
       }
     },
+    // Funzione utilizzata per aggiungere utenti ad un gruppo
     async addToGroup() {
       try {
+        // Effettua la richiesta al server per aggiungere gli utenti selezionati al gruppo
         let response = await this.$axios.put(`/profiles/${sessionStorage.userID}/groups/${this.groupId}`, {
           users: this.selectedUsers,
         }, { headers: { 'Authorization': `${sessionStorage.token}` } });
+        // Salva i dati del gruppo in localStorage e reindirizza l'utente alla pagina del gruppo aggiornata
         localStorage.clear();
         localStorage.userID = response.data.group.groupId;
         localStorage.username = response.data.group.groupName;
         localStorage.photo = response.data.group.photo;
         localStorage.users = JSON.stringify(response.data.members);
+        // Chiude il modale
         this.closeModal();
+        // Renderizza la pagina del gruppo aggiornata
         window.location.reload();
         this.$router.push(`/groups/${response.data.group.groupId}`);
       } catch (e) {
         this.errorMsg = e.toString
       }
     },
+    // Funzione utilizzata per selezionare un utente da aggiungere al gruppo
     selectUser(user) {
       // Controlla se l'utente è già nella lista
       if (!this.selectedUsers.find(u => u.username === user.username)) {
         this.selectedUsers.push(user); // Aggiungi utente selezionato
       }
     },
+    // Funzione utilizzata per rimuovere un utente dalla lista selezionata
     removeUser(username) {
       // Rimuove l'utente dalla lista selezionata
       this.selectedUsers = this.selectedUsers.filter(user => user.username !== username);

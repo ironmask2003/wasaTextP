@@ -1,3 +1,15 @@
+<!-- 
+
+Modale utilizzato per lasciare un commento ad un messaggio
+
+L'utente loggato può:
+- visualizzare la lista di commenti
+- lasciare un commento ad un messaggio
+- rimuovere il suo commento se presente
+
+-->
+
+
 <script>
 export default {
   props: {
@@ -7,32 +19,44 @@ export default {
   },
   data() {
     return {
+      // UserId dell'utente che loggato
       userId: sessionStorage.userID,
+
+      // Conversation id della conversazione in cui lasciare il commento
       convId: parseInt(this.$route.params.convId),
+
+      // Lista dei commenti
       emojis: ["😀", "😂", "😍", "😎", "😭", "😡", "🎉", "❤️", "👍", "🔥"],
     };
   },
   methods: {
+    // Chiude il modale
     closeModal() {
       window.location.reload();
       this.$emit('close');
     },
+    // Funzione che commanta il messaggio selezionato
     async commentMessage(emoji) {
       this.errormsg = null;
+      // Effettua una richiesta PUT per lasciare un commento al messaggio selezionato o modificare il commento già presente
       const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}/reactions`;
       this.$axios.put(url, { comment: emoji }, { headers: { 'Authorization': sessionStorage.token } })
         .then(() => {
+          // Chiude il modale
           this.closeModal();
         })
         .catch(e => {
           this.errormsg = e.toString();
         });
     },
+    // Funzione che rimuove il commento dell'utente loggato
     async uncommentMessage(cmtId) {
       this.errormsg = null;
+      // Effettua una richietsa DELETE per rimuovere il commento dell'utente loggato
       const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}/reactions/${cmtId}`;
       this.$axios.delete(url, { headers: { 'Authorization': sessionStorage.token } })
         .then(() => {
+          // Chiude il modale
           this.closeModal();
         })
         .catch(e => {
@@ -135,6 +159,7 @@ export default {
   width: 20px;
   height: 20px;
 }
+
 
 .modal-body {
   padding: 15px;
