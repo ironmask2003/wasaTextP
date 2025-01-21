@@ -87,7 +87,7 @@ Create due file Dockerfile.frontend e Dockerfile.backend come nel mio progetto, 
 
 Aprite il terminale, spostatevi nella cartella del progetto con i due file appena creati e eseuguite i seguenti comandi:
 ```bash
-docker build -t wasa-text-frontend:latest -f Dcokerfile.frontend .
+docker build -t wasa-text-frontend:latest -f Dockerfile.frontend .
 docker build -t wasa-text-backend:latest -f Dockerfile.backend .
 ```
 Al posto di wasa-text-frontend potete mettere un nome a vostra scelta, basta che vi ricordare il nome che avete scelto per il frontend e per il backend. 
