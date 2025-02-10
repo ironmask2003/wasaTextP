@@ -58,6 +58,11 @@ func (rt *_router) commentMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	if userId == msg.SenderUserId {
+		BadRequest(w, err, ctx, "You can't comment your message")
+		return
+	}
+
 	// Comment
 	var comment structs.Comment
 

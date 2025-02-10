@@ -18,7 +18,7 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	// Get the user id from the request
 	userId, err := strconv.Atoi(ps.ByName("user"))
 	if err != nil {
-		BadRequest(w, err, ctx, "Bad request")
+		BadRequest(w, err, ctx, "Bad request, can't get user id from endpoint")
 		return
 	}
 
@@ -36,7 +36,7 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	// Access the file from the request
 	file, _, err := r.FormFile("image")
 	if err != nil {
-		BadRequest(w, err, ctx, "Bad request")
+		BadRequest(w, err, ctx, "Bad request can't get image from the request")
 		return
 	}
 

@@ -91,7 +91,7 @@ export default {
           this.handleUpdateProPicToggle(); // Nasconde il modale e aggiorna la foto del gruppo in localStorage
         })
         .catch(e => {
-          this.errorMsg = e.toString
+          this.errorMsg = e.toString();
         });
     },
     // Funzione che aggiorna il nome del gruppo
@@ -216,7 +216,7 @@ export default {
       </div>
     </div>
     <!-- Lista dei membri del gruppo -->
-    <div v-for="user in groupMembers">
+    <div v-for="user in groupMembers" :key="user.userId">
       <p class="username">
         <!-- Foto profilo dell'utente del gruppo -->
         <img :src="`data:image/jpg;base64,${user.photo}`" class="profile-picture">

@@ -5,7 +5,6 @@ Modale utilizzato per la ricerca di utenti
 -->
 
 <script>
-import { RouterLink } from 'vue-router';
 
 export default {
   // Props passati al componente
@@ -23,6 +22,9 @@ export default {
 
       // Utilizzato per la verifica dell'username inserito
       usernameValidation: new RegExp('^\\w{0,16}$'),
+
+      // Username dell'utente che ha effettuato il login
+      username: sessionStorage.username,
 
       // Lisat di utenti filtrati in base all'username inserito
       filteredUsers: [],
@@ -73,6 +75,7 @@ export default {
       localStorage.userID = userToSend;
       localStorage.username = username;
       localStorage.photo = photo;
+      this.$router.push('/conversation');
       closeModal();
     },
   },
@@ -84,7 +87,6 @@ export default {
       this.filteredUsers = this.users;
     }
   },
-  components: { RouterLink }
 }
 </script>
 
@@ -113,11 +115,9 @@ export default {
               <div class="search-results">
                 <div v-for="user in filteredUsers" :key="user.userId"
                   @click="selectUser(user.userId, user.username, user.photo)">
-                  <RouterLink :to="'/conversation'" class="custom-link" replace force>
                     <div class="user">
-                      <p>{{ user.username }}</p>
+                      <p v-if="user.username != username" >{{ user.username }}</p>
                     </div>
-                  </RouterLink>
                 </div>
               </div>
             </slot>

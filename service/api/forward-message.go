@@ -23,10 +23,10 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	// Get the id of the conversation
+	// Get the id of the destination user
 	convId, err := strconv.Atoi(ps.ByName("conv"))
 	if err != nil {
-		BadRequest(w, err, ctx, "Can't take the conversation id from the endpoint")
+		BadRequest(w, err, ctx, "Error getting the conversation id")
 		return
 	}
 
@@ -48,19 +48,51 @@ func (rt *_router) forwardMessage(w http.ResponseWriter, r *http.Request, ps htt
 	var destConv structs.Conversation
 
 	// Get the conversation where forward the message
-	if r.URL.Query().Has("dest_conv") {
-		destConvId, err := strconv.Atoi(r.URL.Query().Get("dest_conv"))
+	if r.URL.Query().Has("dest_user") {
+		destUser, err := strconv.Atoi(r.URL.Query().Get("dest_user"))
 		if err != nil {
 			BadRequest(w, err, ctx, "Can't get the conversation id from the query")
 			return
 		}
-		// Get the conversation
-		destConv, err = rt.db.GetConversationById(destConvId)
-		if err != nil {
-			BadRequest(w, err, ctx, "Error getting the conversation from the db")
+		// Check if the conversation between userId and destUser exist
+		if check, err := rt.db.CheckIfExistConv(userId, destUser); !check {
+			if err != nil {
+				BadRequest(w, err, ctx, "Can't check")
+				return
+			}
+			destConv.GroupId = 0
+			// Create the conversation
+			destConv, err = rt.db.CreateConversation(destConv)
+			if err != nil {
+				BadRequest(w, err, ctx, "Error creating the covnersation")
+				return
+			}
+
+			// Adding the link of the user and the conversation
+			if rt.db.AddUserConv(destConv.ConversationId, userId) != nil {
+				BadRequest(w, err, ctx, "Error adding in the conversation_user table")
+				return
+			}
+
+			if rt.db.AddUserConv(destConv.ConversationId, destUser) != nil {
+				BadRequest(w, err, ctx, "Error adding the receiver in the conversation_user table")
+				return
+			}
+		} else {
+			// Get the conversation if exist
+			destConvId, err := rt.db.GetConversation(userId, destUser)
+			if err != nil {
+				BadRequest(w, err, ctx, "Error getting the conversation id with the receiver")
+				return
+			}
+			destConv, err = rt.db.GetConversationById(destConvId)
+			if err != nil {
+				BadRequest(w, err, ctx, "Erro getting the conversation with the receiver")
+				return
+			}
 		}
 	} else {
-		BadRequest(w, err, ctx, "Missing the conversation id from query")
+		BadRequest(w, err, ctx, "Missing the user id from query")
 		return
 	}
 

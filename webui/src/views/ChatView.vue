@@ -50,8 +50,14 @@ export default {
       // Messaggio da commentare
       messageToComment: null,
 
+      // Id dell'utente loggato
+      userId: sessionStorage.userID,
+
       // Commenti del messaggio selezionato
       comments: null,
+
+      // Id dell'intervallo
+      intervalId: null,
     }
   },
   emits: ['login-success'],
@@ -101,16 +107,17 @@ export default {
       this.$axios.put(`/profiles/${sessionStorage.userID}/conversations/${this.userIdToSend}`, {
         text: this.text
       }, { headers: { 'Authorization': sessionStorage.token } })
-        .then(response => {
+        .then(async response => {
           // Assegna la convId
           this.convId = response.data.conversationId;
-          // Reindirizza alla pagina della conversazione appena creata
-          this.$router.push(`/conversation/${this.convId}`);
+          await this.$router.push(`/conversation/${this.convId}`);
+          window.location.reload();
         })
         .catch(e => {
-          this.errormsg = e.toString();
+          if (e.response.data != "Can't send empty message\n") {
+            this.errormsg = e.toString();
+          }
         });
-
     },
     // Funzione che elimina un messaggio
     async deleteMessage(msgId) {
@@ -118,8 +125,6 @@ export default {
       // Effettua la richiesta al server per eliminare il messaggio selezionato
       this.$axios.delete(`/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${msgId}`, { headers: { 'Authorization': sessionStorage.token } })
         .then(() => {
-          // Aggiorna i messaggi della conversazione
-          this.getConversation();
         })
         .catch(e => {
           this.errormsg = e.toString();
@@ -141,18 +146,17 @@ export default {
           // Resetta le variabili utilizzate per mandare il messaggio
           this.text = null;
           this.photo = null;
-          // Aggiorna la conversazione
-          this.getConversation();
         })
         .catch(e => {
-          this.errormsg = e.toString();
+          if (e.response.data != "Can't send empty message\n") {
+            this.errormsg = e.toString();
+          }
         });
     },
     // Funzione utilizzata per mostrare o nascondere il modale per lasciare un commento al messaggio selezionato
-    handleCommentModalToggle(cmt, commentsMsg) {
+    handleCommentModalToggle(cmt) {
       // Assegna il messaggio selezionato e i commenti del messaggio selezionato alle variabili messageToComment e comments
       this.messageToComment = cmt;
-      this.comments = commentsMsg;
       // Mostra o nasconde il modale
       this.commentModalIsVisible = !this.commentModalIsVisible;
     },
@@ -167,7 +171,19 @@ export default {
     goToGroupInfo() {
       // Reindirizza alla pagina delle informazioni del gruppo
       this.$router.push(`/groups/${this.userIdToSend}`);
-    }
+    },
+    // Funzione che rimuove il commento dell'utente loggato
+    async uncommentMessage(cmtId, messageId) {
+      this.errormsg = null;
+      // Effettua una richietsa DELETE per rimuovere il commento dell'utente loggato
+      const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${messageId}/reactions/${cmtId}`;
+      this.$axios.delete(url, { headers: { 'Authorization': sessionStorage.token } })
+        .then(() => {
+        })
+        .catch(e => {
+          this.errormsg = e.toString();
+        });
+    },
   },
   mounted() {
     // Controlla se l'utente è loggato altrimenti reindirizza alla pagina di login
@@ -177,7 +193,18 @@ export default {
     }
     // Se la convId è stata presa dai parametri allora prendi i messaggi della conversazione
     if (this.convId != undefined && !isNaN(this.convId)) {
-      this.getConversation()
+      this.getConversation();
+      this.intervalId = setInterval(async () => {
+        clearInterval(this.intervalId);
+        await this.getConversation();
+        this.intervalId = setInterval(this.getConversation, 1000);
+      }, 1000);
+    }
+  },
+  beforeUnmount() {
+    // Pulisci l'intervallo quando il componente viene distrutto
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
     }
   },
   components: { Modal, Comments },
@@ -205,7 +232,7 @@ export default {
       <!-- Modali della pagina -->
 
       <!-- Modale utilizzato per lasciare un commento a un messaggio -->
-      <Comments :show="commentModalIsVisible" :comments="comments" :msg="messageToComment"
+      <Comments :show="commentModalIsVisible" :msg="messageToComment"
         @close="handleCommentModalToggle" title="comments">
         <template>
           <h3>Comments</h3>
@@ -221,7 +248,6 @@ export default {
 
       <!-- Body della pagina -->
       <div class="btn-toolbar mb-2 mb-md-0">
-        <ErrorMsg v-if="errorMsg" :msg="errorMsg"></ErrorMsg>
         <!-- Form per inviare una foto -->
         <div class="btn-group me-2">
           <form @submit.prevent="sendMessage">
@@ -232,8 +258,16 @@ export default {
             </button>
           </form>
         </div>
+        <!-- Input per invaire un messaggio testuale -->
+        <div class="input-group">
+          <input type="text" class="form-control" v-model="text" placeholder="Type your message here">
+          <button class="btn btn-outline-primary" @click="check">Send</button>
+        </div>
       </div>
     </div>
+
+    <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
+
     <!-- Lista dei messaggi della conversazione -->
     <div class="messages" v-for="response in some_data" :key="response.message.messageId">
       <!-- Mostra il contenuto del messaggio, con chi lo ha mandato, il contenuto e il timeStamp -->
@@ -250,6 +284,13 @@ export default {
       <p v-if="response.message.text !== 'null' || response.message.photo !== ''">
         {{ response.timeMsg }}
       </p>
+      <div v-for="cmt in response.comments" :key="cmt.commentId">
+          <p>{{ cmt.comment }} : {{ cmt.commentUsername }}</p>
+          <button v-if="cmt.commentUserId == userId" type="button" class="btn btn-sm btn-outline-secondary"
+            @click="uncommentMessage(cmt.commentId, response.message.messageId)">
+            Delete comment
+          </button>
+      </div>
       <div class="btn-group me-2">
         <!-- Pulsante per inoltrare il messaggio in un'altra conversazione -->
         <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -262,20 +303,13 @@ export default {
           Delete message
         </button>
         <!-- Pulsante per commentare il messaggio -->
-        <button type="button" class="btn btn-sm btn-outline-secondary"
-          @click="handleCommentModalToggle(response.message, response.comments)">
+        <button v-if="response.message.senderUserId != userId" type="button" class="btn btn-sm btn-outline-secondary"
+          @click="handleCommentModalToggle(response.message)">
           Comment message
         </button>
       </div>
       <hr v-if="response.message.text !== 'null' || response.message.photo !== ''">
     </div>
-    <!-- Input per invaire un messaggio testuale -->
-    <div class="input-group">
-      <input type="text" class="form-control" v-model="text" placeholder="Type your message here">
-      <button class="btn btn-outline-primary" @click="check">Send</button>
-    </div>
-
-    <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
   </div>
 </template>
 

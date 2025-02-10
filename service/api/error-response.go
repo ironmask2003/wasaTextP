@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+
 	"wasa.project/service/api/reqcontext"
 )
 
@@ -12,7 +13,7 @@ func InternalServerError(w http.ResponseWriter, err error, msg string, ctx reqco
 
 func BadRequest(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
 	if err != nil {
-		http.Error(w, message+": "+err.Error(), http.StatusBadRequest)
+		http.Error(w, message, http.StatusBadRequest)
 	} else {
 		http.Error(w, message, http.StatusBadRequest)
 	}
@@ -20,7 +21,7 @@ func BadRequest(w http.ResponseWriter, err error, ctx reqcontext.RequestContext,
 
 func Forbidden(w http.ResponseWriter, err error, ctx reqcontext.RequestContext, message string) {
 	if err != nil {
-		http.Error(w, message+": "+err.Error(), http.StatusForbidden)
+		http.Error(w, message, http.StatusForbidden)
 	} else {
 		http.Error(w, message, http.StatusForbidden)
 	}

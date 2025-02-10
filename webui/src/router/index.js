@@ -11,7 +11,7 @@ const router = createRouter({
     { path: '/home', component: HomeView },
     { path: '/conversation', component: ChatView },
     { path: '/conversation/:convId', component: ChatView },
-    { path: '/groups/:groupId', component: GroupInfo }
+    { path: '/groups/:groupId', component: GroupInfo },
   ]
 })
 

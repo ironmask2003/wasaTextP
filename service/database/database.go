@@ -35,6 +35,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+
 	"wasa.project/service/api/structs"
 )
 
@@ -127,6 +128,9 @@ type AppDatabase interface {
 
 	// Delete conversation
 	DeleteConv(convId int) error
+
+	// Get conversation id from sender and receiver
+	GetConversation(sender int, receiver int) (int, error)
 
 	// -- MESSAGE OPERATION -- //
 

@@ -37,7 +37,7 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 
 	// Change username
 	if err := rt.db.SetMyUsername(userId, user.Username); err != nil {
-		BadRequest(w, err, ctx, "Username already used")
+		BadRequest(w, err, ctx, "Username already exist")
 		return
 	}
 

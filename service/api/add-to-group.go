@@ -9,6 +9,7 @@ import (
 	"wasa.project/service/api/reqcontext"
 )
 
+// Function to add a list of users to a group
 func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Take the user id of the user who want add member to a group
 	userId, err := strconv.Atoi(ps.ByName("user"))
@@ -22,7 +23,7 @@ func (rt *_router) addToGroup(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	}
 
-	// Group ID
+	// Take the group id from the endpoint
 	groupId, err := strconv.Atoi(ps.ByName("group"))
 	if err != nil {
 		BadRequest(w, err, ctx, "Bad Request")

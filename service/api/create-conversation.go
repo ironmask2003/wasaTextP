@@ -43,6 +43,12 @@ func (rt *_router) createConversation(w http.ResponseWriter, r *http.Request, ps
 		BadRequest(w, err, ctx, "Error reading the request body")
 		return
 	}
+
+	if msgRequest.Text == "" {
+		BadRequest(w, err, ctx, "Can't send empty message")
+		return
+	}
+
 	msgRequest.SenderUserId = userId
 	msgRequest.Status = "Sended"
 

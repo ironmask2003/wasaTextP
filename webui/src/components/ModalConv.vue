@@ -10,6 +10,8 @@ L'utente loggato può:
 
 
 <script>
+import Notification from './Notification.vue';
+
 export default {
   props: {
     show: Boolean,
@@ -19,65 +21,94 @@ export default {
   data() {
     return {
       errorMsg: "",
-
-      // Lisata delle conversazioni dell'utente
       convs: [],
-
-      // Id della conversazione selezionata
       convId: parseInt(this.$route.params.convId),
+      users: [],          // Lista di tutti gli utenti
+      searchText: "",     // Testo della ricerca
+      filteredUsers: [],  // Lista degli utenti filtrati
+      selectedUsers: [],   // Lista degli utenti selezionati
+
+      // Utilizzato per la verifica dell'username inserito e del nome del gruppo
+      usernameValidation: new RegExp('^\\w{0,16}$'),
+
+      handleNotify: false,
     };
   },
   methods: {
-    // Chiude il modale
+    triggerNotification() {
+      this.$refs.notification.show()
+      setTimeout(() => {
+        this.closeModal();
+      }, 2000);
+    },
     closeModal() {
       this.convs = [];
       window.location.reload();
       this.$emit('close');
     },
-    // Funzione utilizzata per inoltrare un messaggio alla conversazione selezionata
-    async forwardMessage(destConvId, user) {
-      // Set the local storage
-      this.errormsg = null;
-      // Effettua una richiesta POST al server per inoltrare il messaggio alla conversazione selezionata
-      const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}?dest_conv=${destConvId}`;
-      this.$axios.post(url, {}, { headers: { 'Authorization': sessionStorage.token } })
-        .then(() => {
-          // Setta il local storage
-          localStorage.clear();
-          localStorage.userID = user.userId;
-          localStorage.username = user.username;
-          localStorage.photo = user.photo;
-          // Chiude il modale
-          this.closeModal();
-        })
-        .catch(e => {
-          this.errormsg = e.toString();
-        });
-    },
-    // Funzione utilizzata per ottenere le conversazioni dell'utente loggato
-    async getMyConversations() {
-      this.errormsg = null;
-      try {
-        // Effettua una richiesta GET al server per ottenere le conversazioni dell'utente loggato
-        let response = await this.$axios.get(`/profiles/${sessionStorage.userID}/conversations`, { headers: { 'Authorization': sessionStorage.token } });
-        this.convs = response.data;
-      } catch (e) {
-        this.errormsg = e.toString();
+    async filterUsers() {
+      this.errorMsg = "";
+      this.filteredUsers = this.users;
+
+      if (this.searchText.length > 0) {
+        if (this.searchText.length > 16 || !this.usernameValidation.test(this.searchText)) {
+          this.errorMsg = "Invalid username, it can contain only letters and numbers for a maximum of 16 characters.";
+          this.filteredUsers = [];
+          return;
+        }
+        try {
+          const url = `/profiles?username=${this.searchText}`;
+          let response = await this.$axios.get(url, { headers: { 'Authorization': `${sessionStorage.token}` } });
+          if (response.data == null) {
+            this.filteredUsers = [];
+            return;
+          }
+          this.filteredUsers = response.data;
+        } catch (e) {
+          this.errorMsg = e.toString();
+          this.filteredUsers = [];
+        }
       }
-    }
+    },
+    async forwardMessage() {
+      this.errorMsg = null;
+      for (let user of this.selectedUsers) {
+        const dest_user = user.userId; // Assumi che l'ID della conversazione per l'utente selezionato sia disponibile in user.convId
+        const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}?dest_user=${dest_user}`;
+        await this.$axios.post(url, {}, { headers: { 'Authorization': sessionStorage.token } })
+          .then(() => {
+            this.triggerNotification();
+          })
+          .catch(e => {
+            this.errorMsg = e.toString();
+          });
+      }
+    },
+    selectUser(user) {
+      if (!this.selectedUsers.find(u => u.username === user.username)) {
+        this.selectedUsers.push(user);
+      }
+    },
+    removeUser(username) {
+      this.selectedUsers = this.selectedUsers.filter(user => user.username !== username);
+    },
   },
   watch: {
+    searchText() {
+      this.filterUsers();
+    },
     show() {
-      this.getMyConversations();
+      this.filteredUsers = this.users;
     }
   },
-
+  components: { Notification },
 }
 </script>
 
 <template>
   <Transition name="modal">
     <div v-if="show" class="modal-mask">
+      <Notification ref="notification" message="Operazione completata!" :duration="3000"/>
       <div class="modal-wrapper">
         <div class="modal-container">
           <div class="modal-header">
@@ -88,18 +119,30 @@ export default {
               </svg>
             </button>
           </div>
-
           <div class="modal-body">
             <slot name="body">
+              <!-- Campo di ricerca -->
+              <div class="search-input">
+                <input type="text" v-model="searchText" placeholder="Search" />
+              </div>
+              <p></p>
+              <div class="btn-group me-2">
+                <button class="btn btn-sm btn-outline-primary" @click="forwardMessage">Forward Message</button>
+              </div>
+
+              <!-- Risultati della ricerca -->
               <div class="search-results">
-                <div v-for="response in convs" :key="response.conversation.conversationId"
-                  @click="forwardMessage(response.conversation.conversationId, response.user)">
-                  <RouterLink :to="'/conversation/' + response.conversation.conversationId" class="custom-link" replace
-                    force>
-                    <div class="user" v-if="response.conversation.conversationId !== convId">
-                      <p>{{ response.user.username }}</p>
-                    </div>
-                  </RouterLink>
+                <div v-for="user in filteredUsers" :key="user.userId" @click="selectUser(user)" class="user">
+                  <p>{{ user.username }}</p>
+                </div>
+              </div>
+
+              <!-- Lista di utenti selezionati -->
+              <div class="selected-users">
+                <h4>Selected Users:</h4>
+                <div v-for="user in selectedUsers" :key="user.userId" class="selected-user">
+                  <span>{{ user.username }}</span>
+                  <button @click="removeUser(user.username)">Remove</button>
                 </div>
               </div>
             </slot>

@@ -14,7 +14,7 @@ func SetDefaultPhoto(userId int) string {
 	return fmt.Sprintf("./storage/profiles/%d/user_photo.jpg", userId)
 }
 
-// Function return the path of the group
+// Function return the path of the group photo
 func SetDefaultPhotoGroup(groupId int) string {
 	return fmt.Sprintf("./storage/groups/%d/group_photo.jpg", groupId)
 }

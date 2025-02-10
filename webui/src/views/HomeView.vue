@@ -1,4 +1,5 @@
 <!--
+
 Pagina princiaple del sito in cui vengono mostrate le conversazioni dell'utente loggato.
 
 In questa pagina l'utente può:
@@ -8,7 +9,6 @@ In questa pagina l'utente può:
 - creare una nuova conversazione con un utente
 
 -->
-
 
 <script>
 import Modal from '../components/Modal.vue';
@@ -29,6 +29,9 @@ export default {
 
       // Lista di utenti del nuovo gruppo
       users: [],
+
+      // Id dell'intervallo
+      intervalId: null,
     }
   },
   emits: ['login-success', 'username-changed'],
@@ -79,8 +82,18 @@ export default {
       this.$router.push("/");
       return;
     }
-    // Altrimenti ottente le conversazioni dell'utente
     this.getConversations();
+    this.intervalId = setInterval(async () => {
+      clearInterval(this.intervalId);
+      await this.getConversations();
+      this.intervalId = setInterval(this.getConversations, 1000);
+    }, 1000);
+  },
+  beforeUnmount() {
+    // Pulisci l'intervallo quando il componente viene distrutto
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   },
   components: { Modal, Group }
 }

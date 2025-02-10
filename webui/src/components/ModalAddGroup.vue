@@ -46,7 +46,7 @@ export default {
     // Funzione utilizzata per la ricerca degli utenti da aggiungere al gruppo
     async filterUsers() {
       this.errorMsg = "";
-      this.filteredUsers = this.users;
+      this.filteredUsers = this.users
 
       if (this.searchText.length > 0) {
         if (this.searchText.length > 16 || !this.usernameValidation.test(this.searchText)) {
@@ -94,7 +94,7 @@ export default {
         window.location.reload();
         this.$router.push(`/groups/${response.data.group.groupId}`);
       } catch (e) {
-        this.errorMsg = e.toString
+        this.errorMsg = e.toString();
       }
     },
     // Funzione utilizzata per selezionare un utente da aggiungere al gruppo

@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
@@ -57,6 +58,10 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 		BadRequest(w, err, ctx, "Can't get messages of the conversation")
 		return
 	}
+
+	sort.Slice(messages, func(i, j int) bool {
+		return messages[i].SendTime.After(messages[j].SendTime)
+	})
 
 	// Informazione di chi ha mandato il messaggio
 	// Stuct used for the response

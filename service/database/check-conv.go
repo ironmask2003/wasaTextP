@@ -13,6 +13,13 @@ var queryCheckUserConv = `
   WHERE ConversationId = ? AND UserId = ?
 `
 
+var queryGetSenderUser = `
+	SELECT convp.ConversationId
+	FROM conversation_user convp, conversation_user conv, conversation c
+	WHERE convp.ConversationId = conv.ConversationId AND convp.UserId = ? AND conv.UserId = ? 
+	AND c.ConversationId = convp.ConversationId AND c.GroupId IS NULL
+`
+
 func (db *appdbimpl) CheckIfExistConv(sender int, receiver int) (bool, error) {
 	var count int
 	err := db.c.QueryRow(queryCheckConv, sender, receiver).Scan(&count)
@@ -30,4 +37,13 @@ func (db *appdbimpl) CheckUserConv(userId int, convId int) (bool, error) {
 		return false, err
 	}
 	return id != 0, nil
+}
+
+func (db *appdbimpl) GetConversation(sender int, receiver int) (int, error) {
+	var conv int
+	err := db.c.QueryRow(queryGetSenderUser, sender, receiver).Scan(&conv)
+	if err != nil {
+		return conv, err
+	}
+	return conv, nil
 }

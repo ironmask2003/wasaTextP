@@ -101,7 +101,7 @@ export default {
         // Reinderizza alla pagina della conversazione
         this.$router.push(`/conversations/${response.data.conversation.conversationId}`);
       } catch (e) {
-        this.errorMsg = e.toString
+        this.errorMsg = e.toString();
       }
     },
     // Seleziona l'utente da aggiungere alla lista degli utenti del gruppo

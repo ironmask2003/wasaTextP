@@ -4,6 +4,14 @@ import (
 	"unicode/utf8"
 )
 
+/* Struct used to rapresent a comment in the db
+*
+* CommentId is the id of the comment
+* Comment is the body of the comment
+* MessageId is the id of the message where the comment was written
+* ConversationId is the id of the conversation where the comment was written
+* CommentUserId is the id of the user who wrote the comment
+ */
 type Comment struct {
 	CommentId      int    `json:"commentId"`
 	Comment        string `json:"comment"`
@@ -12,6 +20,7 @@ type Comment struct {
 	CommentUserId  int    `json:"commnetUserId"`
 }
 
+// Struct used to rapresent a comment in the response adding the username of the user who wrote the comment
 type RspComment struct {
 	CommentId       int    `json:"commentId"`
 	Comment         string `json:"comment"`

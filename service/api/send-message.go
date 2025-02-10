@@ -3,11 +3,12 @@ package api
 import (
 	"encoding/base64"
 	"encoding/json"
-	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
 	"wasa.project/service/api/structs"
 )
@@ -78,6 +79,12 @@ func (rt *_router) sendMessage(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Access the file from the request
 	file, _, err := r.FormFile("photo")
+
+	// Check if the message text is empty
+	if msg.Text == "null" && file == nil {
+		BadRequest(w, err, ctx, "Can't send empty message")
+		return
+	}
 
 	// Check if the request have a file
 	if err == nil {

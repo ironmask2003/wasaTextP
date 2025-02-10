@@ -100,3 +100,12 @@ docker run -it --rm -p 8080:80 wasa-text-frontend:latest
 (IMPORTANTE: Devono essere entrambi eseguiti per il funzionamento del sito, se eseguite delle modifiche sia lato backend che frontend bloccate i due processi con ctrl + c e rieseguite i comandi sopra `docker build ...` per il re-build del sito).
 
 A questo punto aprite il browser e digitate localhost:8080 e vi appare il sito web.
+
+Oppure prendete i due file .sh, e eseguito i seguenti comandi:
+```bash
+./build_docker.sh // Se volete eseguire il build sia del frontend che del backend
+./build_docker.sh front // Se volete eseguire il build solo del frontend
+./build_docker.sh back // Se volete eseguire il build solo del backend
+
+./run_docker.sh // Per avviare in localhost:8000 il sito con backend e frontend in running
+```

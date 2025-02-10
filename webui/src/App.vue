@@ -21,6 +21,8 @@ import Modal from './components/Modal.vue'
 export default {
   data() {
     return {
+      errorMsg: null,
+
       // Utilizzato per mostrare o nascondere il modale di ricerca
       searchModalIsVisible: false,
       // Utilizato per mostarer determinati contenuti della pagina solo se un utente ha effettuato il login
@@ -84,13 +86,13 @@ export default {
       formData.append('image', this.newProPic);
 
       // Effettua una richiesta PUT al server per l'aggiornamento della foto profilo
-      this.$axios.put(`/profiles/${this.userID}/photo`, formData, { headers: { 'Authorization': `${sessionStorage.token}` } })
+      this.$axios.put(`/profiles/${sessionStorage.userID}/photo`, formData, { headers: { 'Authorization': `${sessionStorage.token}` } })
         .then(response => {
           this.photo = response.data.photo; // Assegna la nuova immagine del profilo alla variabile photo per l'aggiornamento della pagina
           this.handleUpdateProPicToggle(); // Nasconde il modale di aggiornamento dell'immagine del profilo e aggiorna l'immagine del profilo della sessione
         })
         .catch(e => {
-          this.errorMsg = e.toString
+          this.errorMsg = e.toString();
         });
     },
     // Funzione utilizzata per l'aggiornamento dell'username dell'utente
@@ -136,6 +138,7 @@ export default {
     // Funzione utilizzata per il login dell'utente
     handleLoginSuccess() {
       this.isLoggedIn = true;
+      this.userID = sessionStorage.userID;
       this.username = sessionStorage.username;
       this.photo = sessionStorage.photo;
     }
@@ -272,7 +275,7 @@ export default {
 
       <!-- Contenuto principale della pagina -->
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <RouterView @login-success="handleLoginSuccess" />
+        <RouterView @login-success="handleLoginSuccess"/>
       </main>
     </div>
   </div>

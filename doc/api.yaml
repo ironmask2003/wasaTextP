@@ -335,7 +335,7 @@ paths:
           description: Conversation opened
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Conversation" }
+              schema: { $ref: "#/components/schemas/InnerConv" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404": { $ref: "#/components/responses/NotFound" }
@@ -353,7 +353,7 @@ paths:
           description: Conversation getted succesfully
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/Conversation" }
+              schema: { $ref: "#/components/schemas/InnerConv" }
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "403": { $ref: "#/components/responses/Forbidden" }
@@ -398,11 +398,11 @@ paths:
       - $ref: "#/components/parameters/msg"
     post:
       parameters:
-        - name: dest_conv_id
+        - name: dest_user
           description: Where send the message
           in: query
           required: true
-          schema: { $ref: "#/components/schemas/Identification" }
+          schema: { $ref: "#/components/schemas/ProfilesList" }
       tags: [Message]
       operationId: forwardMessage
       security:
@@ -676,6 +676,18 @@ components:
         - groupname
         - groupid
         - users
+    InnerConv:
+      title: Inner conversation
+      description: Conversation with all message
+      type: object
+      properties:
+        conv_id: { $ref: "#/components/schemas/Identification" }
+        messages:
+          type: array
+          description: All messages of the conversation
+          items: { $ref: "#/components/schemas/Message" }
+          minItems: 0
+          maxItems: 100
     Conversation:
       title: Conversation
       description: Conversation is in a group or between two users

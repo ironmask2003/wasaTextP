@@ -15,7 +15,6 @@ export default {
   props: {
     show: Boolean,
     msg: Object,
-    comments: Object,
   },
   data() {
     return {
@@ -27,6 +26,9 @@ export default {
 
       // Lista dei commenti
       emojis: ["😀", "😂", "😍", "😎", "😭", "😡", "🎉", "❤️", "👍", "🔥"],
+
+      // Errore
+      errormsg: null,
     };
   },
   methods: {
@@ -46,21 +48,7 @@ export default {
           this.closeModal();
         })
         .catch(e => {
-          this.errormsg = e.toString();
-        });
-    },
-    // Funzione che rimuove il commento dell'utente loggato
-    async uncommentMessage(cmtId) {
-      this.errormsg = null;
-      // Effettua una richietsa DELETE per rimuovere il commento dell'utente loggato
-      const url = `/profiles/${sessionStorage.userID}/conversations/${this.convId}/messages/${this.msg.messageId}/reactions/${cmtId}`;
-      this.$axios.delete(url, { headers: { 'Authorization': sessionStorage.token } })
-        .then(() => {
-          // Chiude il modale
-          this.closeModal();
-        })
-        .catch(e => {
-          this.errormsg = e.toString();
+          this.errormsg = e.response.data;
         });
     },
   },
@@ -82,22 +70,13 @@ export default {
           </div>
 
           <div class="modal-body">
-            <div class="search-results">
-              <div v-for="cmt in comments" :key="cmt.commentId">
-                <div class="user">
-                  <p>{{ cmt.commentUsername }} : {{ cmt.comment }}</p>
-                  <button v-if="cmt.commentUserId == userId" type="button" class="btn btn-sm btn-outline-secondary"
-                    @click="uncommentMessage(cmt.commentId)">
-                    Remove Comment
-                  </button>
-                </div>
-              </div>
-            </div>
             <div class="emoji-grid">
               <div v-for="emoji in emojis" :key="emoji" class="emoji" @click="commentMessage(emoji)">
                 {{ emoji }}
               </div>
             </div>
+
+            <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
           </div>
         </div>
       </div>
@@ -159,7 +138,6 @@ export default {
   width: 20px;
   height: 20px;
 }
-
 
 .modal-body {
   padding: 15px;
