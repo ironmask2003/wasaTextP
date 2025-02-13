@@ -89,6 +89,18 @@ var conversationUsersSQL = `CREATE TABLE IF NOT EXISTS conversation_user (
       ON DELETE CASCADE
 );`
 
+var checkmarksTableSQL = `CREATE TABLE IF NOT EXISTS checkmarks (
+  MessageId INTEGER NOT NULL,
+  ConversationId INTEGER NOT NULL,
+  UserId INTEGER NOT NULL,
+  Primary Key(MessageId, ConversationId, UserId),
+  CONSTRAINT fk_checkmarks
+    FOREIGN KEY (MessageId, ConversationId) REFERENCES message(MessageId, ConversationId)
+      ON DELETE CASCADE
+    FOREIGN KEY (UserId) REFERENCES user(UserId)
+      ON DELETE CASCADE
+);`
+
 /*
 * COMMENT TABLE
 * - CommentId: int (PK) Unique ID for each comment

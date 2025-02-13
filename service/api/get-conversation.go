@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"sort"
+	"strings"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
@@ -38,17 +39,42 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 		return
 	}
 
+	// Getting all message after the update of the status
 	messages, err := rt.db.GetMessages(conv.ConversationId)
 	if err != nil {
 		BadRequest(w, err, ctx, "Can't get messages of the conversation")
 		return
 	}
 
-	for i := 0; i < len(messages); i++ {
-		err = rt.db.UpdateStatusMessage(messages[i].MessageId, conv.ConversationId)
-		if err != nil {
-			BadRequest(w, err, ctx, "Error updating status o message")
+	// Count the number of member of the conversation
+	number, err := rt.db.CountMember(conv.ConversationId)
+	if err != nil {
+		BadRequest(w, err, ctx, "Can't count the number of member of the conversation")
+		return
+	}
+
+	for _, msg := range messages {
+		// Insert checkmarks
+		err = rt.db.InsertCheckmarks(conv.ConversationId, msg.MessageId, userId)
+		if err != nil && !strings.Contains(err.Error(), "UNIQUE constraint failed"){
+			BadRequest(w, err, ctx, "Can't insert the checkmarks " + err.Error())
 			return
+		}
+
+		// Count checkmarks
+		count, err := rt.db.CountCheckmarks(conv.ConversationId, msg.MessageId)
+		if err != nil {
+			BadRequest(w, err, ctx, "Can't count the checkmarks " + err.Error())
+			return
+		}
+
+		// If the message is read by all the member of the conversation
+		if count == number {
+			err = rt.db.UpdateStatus(conv.ConversationId, msg.MessageId, "read")
+			if err != nil {
+				BadRequest(w, err, ctx, "Can't update the status of the message")
+				return
+			}
 		}
 	}
 
@@ -74,6 +100,7 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 
 	response := make([]MessageResponse, len(messages))
 	for idx, msg := range messages {
+
 		sender, err := rt.db.GetUserById(msg.SenderUserId)
 		if err != nil {
 			BadRequest(w, err, ctx, "Error taking the user from the user table")

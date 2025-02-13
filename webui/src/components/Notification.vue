@@ -10,7 +10,7 @@
       message: String,
       duration: {
         type: Number,
-        default: 3000, // Tempo predefinito: 3 secondi
+        default: 1000, // Tempo predefinito: 3 secondi
       },
     },
     data() {

@@ -39,7 +39,7 @@ export default {
       this.$refs.notification.show()
       setTimeout(() => {
         this.closeModal();
-      }, 2000);
+      }, 500);
     },
     closeModal() {
       this.convs = [];

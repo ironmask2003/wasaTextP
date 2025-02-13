@@ -132,6 +132,11 @@ type AppDatabase interface {
 	// Get conversation id from sender and receiver
 	GetConversation(sender int, receiver int) (int, error)
 
+	// Count the number of member of a conversation
+	CountMember(conversationID int) (int, error)
+
+	UpdateStatus(conversationID int, messageID int, status string) error
+
 	// -- MESSAGE OPERATION -- //
 
 	// Create new message
@@ -142,9 +147,6 @@ type AppDatabase interface {
 
 	// Get all messages of a conversation
 	GetMessages(convId int) ([]structs.Message, error)
-
-	// Update status of message
-	UpdateStatusMessage(msgId int, convId int) error
 
 	// Get max id of message table
 	GetMaxMessageId(convId int) (int, error)
@@ -168,6 +170,11 @@ type AppDatabase interface {
 
 	// Get all comments of a message
 	GetMsgComments(msgId int, convId int) ([]structs.RspComment, error)
+
+	// -- CHECKMARKS OPERATION -- //
+	InsertCheckmarks(conversationID int, messageID int, userID int) error
+
+	CountCheckmarks(conversationID int, messageID int) (int, error)
 
 	Ping() error
 }
@@ -195,7 +202,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// Check of the number of table is corret (there are 6 tables)
 	// if the number of table is not 5, we creating missing tables
-	if tableSQL != 7 {
+	if tableSQL != 8 {
 
 		// Craetion of the user tabel
 		_, err = db.Exec(userTableSQL)
@@ -237,6 +244,12 @@ func New(db *sql.DB) (AppDatabase, error) {
 		_, err = db.Exec(commentTableSQL)
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure comment: %w", err)
+		}
+
+		// Creation of the checkmarks table
+		_, err = db.Exec(checkmarksTableSQL)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure checkmarks: %w", err)
 		}
 	}
 

@@ -249,15 +249,7 @@ export default {
       <!-- Body della pagina -->
       <div class="btn-toolbar mb-2 mb-md-0">
         <!-- Form per inviare una foto -->
-        <div class="btn-group me-2">
-          <form @submit.prevent="sendMessage">
-            <input type="file" ref="file" accept=".jpg,.jpeg" @change="handleFileChange" />
-            <!-- Pulsante per invaire la foto -->
-            <button type="submit" class="btn btn-sm btn-outline-primary">
-              Send photo
-            </button>
-          </form>
-        </div>
+        <input type="file" ref="file" accept=".jpg,.jpeg" @change="handleFileChange" />
         <!-- Input per invaire un messaggio testuale -->
         <div class="input-group">
           <input type="text" class="form-control" v-model="text" placeholder="Type your message here">
@@ -283,6 +275,8 @@ export default {
         :src="`data:image/jpg;base64,${response.message.photo}`" alt="Message Photo">
       <p v-if="response.message.text !== 'null' || response.message.photo !== ''">
         {{ response.timeMsg }}
+        <span v-if="response.message.status === 'Sended'">✔️</span>
+        <span v-if="response.message.status === 'read'">✔️✔️</span>
       </p>
       <div v-for="cmt in response.comments" :key="cmt.commentId">
           <p>{{ cmt.comment }} : {{ cmt.commentUsername }}</p>
