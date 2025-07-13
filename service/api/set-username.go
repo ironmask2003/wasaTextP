@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
 )
@@ -35,6 +36,15 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 		return
 	}
 
+	var oldUser User
+	// Take the old user from the db
+	oldUserDB, err := rt.db.GetUserById(userId)
+	if err != nil {
+		BadRequest(w, err, ctx, "Error taking the user from the db")
+		return
+	}
+	oldUser.ConvertUserFromDB(oldUserDB)
+
 	// Change username
 	if err := rt.db.SetMyUsername(userId, user.Username); err != nil {
 		BadRequest(w, err, ctx, "Username already exist")
@@ -57,5 +67,17 @@ func (rt *_router) setMyUserName(w http.ResponseWriter, r *http.Request, ps http
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		InternalServerError(w, err, "Error encoding response", ctx)
 		return
+	} else {
+		rt.wsConnMutex.RLock()
+		for _, conn := range rt.wsConnMap {
+			message := map[string]interface{}{
+				"message":     "Username Updated",
+				"data":        user.Username,
+				"oldUsername": oldUser.Username,
+			}
+			jsonData, _ := json.Marshal(message)
+			conn.WriteMessage(websocket.TextMessage, jsonData)
+		}
+		rt.wsConnMutex.RUnlock()
 	}
 }

@@ -24,14 +24,12 @@ export default {
 
       // Utilizzato per mostrare o nascondere il modal di ricerca
       searchModalIsVisible: false,
+
       // Utilizzato per mostrare o nascondere il modal di creazione di un gruppo
       createGroupModalIsVisible: false,
 
       // Lista di utenti del nuovo gruppo
       users: [],
-
-      // Id dell'intervallo
-      intervalId: null,
     }
   },
   emits: ['login-success', 'username-changed'],
@@ -82,18 +80,20 @@ export default {
       this.$router.push("/");
       return;
     }
+
     this.getConversations();
-    this.intervalId = setInterval(async () => {
-      clearInterval(this.intervalId);
-      await this.getConversations();
-      this.intervalId = setInterval(this.getConversations, 1000);
-    }, 1000);
-  },
-  beforeUnmount() {
-    // Pulisci l'intervallo quando il componente viene distrutto
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "ws-message") {
+        console.log("Received message from WebSocket:", event.data.data);
+        const messaggio = JSON.parse(event.data.data);
+
+        // Controlla se il messaggio ricevuto è relativo all'aggiornamento dell'username
+        if (messaggio.message == "Username Updated") {
+          this.getConversations(); // Aggiorna la lista delle conversazioni
+        }
+      }
+    });
   },
   components: { Modal, Group }
 }
@@ -103,39 +103,27 @@ export default {
   <div>
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-      <h1 class="h2">Home page</h1>
+      <h1 class="h2">Chat</h1>
 
       <!-- Modale utilizzato per la creazione di un nuovo gruppo -->
       <Group :show="createGroupModalIsVisible" @close="handleCreateGroupModalToggle" title="search">
         <template v-slot:header>
-          <h3>Select users</h3>
+          <h1 class="profile-title">Select users</h1>
         </template>
       </Group>
       <!-- Modale utilzzato per la ricerca degli utenti con cui aprire una nuova conversazione -->
       <Modal :show="searchModalIsVisible" @close="handleSearchModalToggle" title="search">
         <template v-slot:header>
-          <h3>Users</h3>
+          <h1 class="profile-title">Users</h1>
         </template>
       </Modal>
 
       <!-- Pulsanti per aggiornare la lista delle conversazioni, creare un nuovo gruppo e cercare nuovi utenti -->
       <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group me-2">
-          <!-- Pulsante per aggiornare la lista delle conversazioni -->
-          <button type="button" class="btn btn-sm btn-outline-secondary" @click="getConversations">
-            Refresh
-          </button>
-        </div>
         <!-- Pulsante per creare un nuovo gruppo -->
         <div class="btn-group me-2">
           <button type="button" class="btn btn-sm btn-outline-primary" @click="handleCreateGroupModalToggle">
             New Group
-          </button>
-        </div>
-        <!-- Pulsante per cercare nuovi utenti e aprire un nuova conversazione -->
-        <div class="btn-group me-2">
-          <button type="button" class="btn btn-sm btn-outline-primary" @click="handleSearchModalToggle">
-            New Chat
           </button>
         </div>
       </div>
@@ -161,15 +149,16 @@ export default {
         <!-- Se la conversazione è con un gruppo -->
         <div v-else>
           <!-- Mostra il nome del gruppo, l'ultimo messaggio e chi lo ha inviato come per il singolo utente -->
-          <button v-if="response.message.photo == ''" type="button" class="btn btn-sm btn-outline-primary"
-            @click="goToConversation(response)">
-            {{ response.group.groupName }} <br> {{ response.senderUser.username }}: {{ response.message.text }}
-          </button>
+          <div v-if="response.message.photo == ''" type="button" @click="goToConversation(response)">
+            <div>
+            <img :src="`data:image/jpg;base64,${response.group.photo}`" class="profile-picture position-picture" /> 
+            <h6 class="subtitle subtitle-black">{{ response.group.groupName }} <br/> <span class="last-msg"> {{ response.senderUser.username }}: {{ response.message.text }} </span> </h6>
+            </div>
+          </div>
           <button type="button" class="btn btn-sm btn-outline-primary" @click="goToConversation(response)" v-else>
             {{ response.group.groupName }} <br> {{ response.senderUser.username }}: Photo
           </button>
         </div>
-        <hr>
       </div>
     </div>
 
@@ -182,4 +171,39 @@ export default {
   </div>
 </template>
 
-<style></style>
+<style>
+.subtitle-black {
+  color: black;
+  display: inline;
+  position: relative;
+}
+
+.position-picture {
+  position: relative;
+  top: 10px;
+}
+
+.last-msg {
+  position: relative;
+  left: 50px;
+  top: -10px;
+  font-weight: 100;
+}
+
+.conversations {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.conversations:hover {
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.conversations:active {
+  background-color: #e0e0e0;
+}
+</style>

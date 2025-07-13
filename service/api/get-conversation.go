@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"sort"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
@@ -56,15 +56,15 @@ func (rt *_router) getConversation(w http.ResponseWriter, r *http.Request, ps ht
 	for _, msg := range messages {
 		// Insert checkmarks
 		err = rt.db.InsertCheckmarks(conv.ConversationId, msg.MessageId, userId)
-		if err != nil && !strings.Contains(err.Error(), "UNIQUE constraint failed"){
-			BadRequest(w, err, ctx, "Can't insert the checkmarks " + err.Error())
+		if err != nil && !strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			BadRequest(w, err, ctx, "Can't insert the checkmarks "+err.Error())
 			return
 		}
 
 		// Count checkmarks
 		count, err := rt.db.CountCheckmarks(conv.ConversationId, msg.MessageId)
 		if err != nil {
-			BadRequest(w, err, ctx, "Can't count the checkmarks " + err.Error())
+			BadRequest(w, err, ctx, "Can't count the checkmarks "+err.Error())
 			return
 		}
 

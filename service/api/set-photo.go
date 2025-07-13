@@ -10,6 +10,7 @@ import (
 
 	"wasa.project/service/api/imageFunctions"
 
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
 )
@@ -27,7 +28,7 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	// Check if the size of the image is less than 5MB
-	err = r.ParseMultipartForm(5 << 20)
+	err = r.ParseMultipartForm(3 << 20)
 	if err != nil {
 		BadRequest(w, err, ctx, "Image too big")
 		return
@@ -76,7 +77,15 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	}
 
 	var res Response
+	var user User
 	res.Photo = response
+
+	userDB, err := rt.db.GetUserById(userId)
+	if err != nil {
+		InternalServerError(w, err, "Error getting user from the database", ctx)
+		return
+	}
+	user.ConvertUserFromDB(userDB)
 
 	// Resposne
 	w.WriteHeader(http.StatusOK)
@@ -84,5 +93,17 @@ func (rt *_router) setMyPhoto(w http.ResponseWriter, r *http.Request, ps httprou
 	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error encoding the response", ctx)
 		return
+	} else {
+		rt.wsConnMutex.RLock()
+		for _, conn := range rt.wsConnMap {
+			message := map[string]interface{}{
+				"message":  "Photo Updated",
+				"data":     res.Photo,
+				"username": user.Username,
+			}
+			jsonData, _ := json.Marshal(message)
+			conn.WriteMessage(websocket.TextMessage, jsonData)
+		}
+		rt.wsConnMutex.RUnlock()
 	}
 }

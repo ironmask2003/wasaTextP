@@ -12,6 +12,12 @@ import (
 func (rt *_router) searchUsers(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 	// Get the search query from the request
 	query_search := r.URL.Query().Get("username")
+
+	if len(query_search) == 0 {
+		http.Error(w, "Empty", http.StatusBadRequest)
+		return
+	}
+
 	validQuerySearch := regexp.MustCompile(`^[a-z0-9]{1,13}$`)
 	if !validQuerySearch.MatchString(query_search) {
 		http.Error(w, "Bad Request", http.StatusBadRequest)

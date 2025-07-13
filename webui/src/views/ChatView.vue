@@ -15,6 +15,7 @@ L'utente loggato può:
 <script>
 import Modal from '../components/ModalConv.vue';
 import Comments from '../components/ModalComments.vue';
+import socket from '../services/websocket.js';
 
 export default {
   data() {
@@ -191,21 +192,25 @@ export default {
       this.$router.push("/");
       return;
     }
-    // Se la convId è stata presa dai parametri allora prendi i messaggi della conversazione
-    if (this.convId != undefined && !isNaN(this.convId)) {
-      this.getConversation();
-      this.intervalId = setInterval(async () => {
-        clearInterval(this.intervalId);
-        await this.getConversation();
-        this.intervalId = setInterval(this.getConversation, 1000);
-      }, 1000);
-    }
-  },
-  beforeUnmount() {
-    // Pulisci l'intervallo quando il componente viene distrutto
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+
+    this.getConversation(); // Ottiene i messaggi della conversazione
+
+    window.addEventListener("message", (event) => {
+      if (event.data.type === "ws-message") {
+        const messaggio = JSON.parse(event.data.data);
+
+        // Controlla se il messaggio ricevuto è relativo all'aggiornamento dell'username
+        if (messaggio.message == "Username Updated" && sessionStorage.username != messaggio.oldUsername) {
+          this.getConversation(); // Aggiorna la lista delle conversazioni
+          this.userToSend = messaggio.data; // Aggiorna il nome dell'utente con cui si sta conversando
+        }
+
+        if (messaggio.message == "Photo Updated") {
+          this.getConversation(); // Aggiorna la lista delle conversazioni
+          this.proPic64 = messaggio.data;
+        }
+      }
+    });
   },
   components: { Modal, Comments },
 }

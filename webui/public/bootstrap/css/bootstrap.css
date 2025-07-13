@@ -3660,6 +3660,7 @@ textarea.form-control-lg {
 }
 .nav-link:hover, .nav-link:focus {
   color: var(--bs-nav-link-hover-color);
+  cursor: pointer;
 }
 .nav-link.disabled {
   color: var(--bs-nav-link-disabled-color);
@@ -3699,6 +3700,7 @@ textarea.form-control-lg {
   background-color: var(--bs-nav-tabs-link-active-bg);
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
+
 .nav-tabs .dropdown-menu {
   margin-top: calc(var(--bs-nav-tabs-border-width) * -1);
   border-top-left-radius: 0;
@@ -3730,6 +3732,16 @@ textarea.form-control-lg {
 .nav-fill .nav-item {
   flex: 1 1 auto;
   text-align: center;
+}
+
+.nav-list {
+  display: grid;
+  grid-template-rows: 1fr auto; /* Primo spazio flessibile, secondo fisso */
+  height: 80%;
+}
+
+.nav-item-bottom {
+  grid-row: 2; /* Posiziona nell'ultima riga */
 }
 
 .nav-justified > .nav-link,
@@ -10903,5 +10915,61 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+/* My custom style */
+
+/* Button used for edit username of edit photo*/
+.Btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100px;
+  height: 40px;
+  border: none;
+  padding: 0px 20px;
+  background-color: black;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 5px 5px 0px black;
+  transition-duration: 0.3s;
+}
+
+.svg {
+  width: 13px;
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+  fill: white;
+  transition-duration: 0.3s;
+}
+
+.Btn:hover {
+  color: transparent;
+}
+
+.Btn:hover .svg {
+  right: 43%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  transition-duration: 0.3s;
+}
+
+.Btn:active {
+  transform: translate(3px, 3px);
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 0px white;
+}
+
+.profile-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
 
 /*# sourceMappingURL=bootstrap.css.map */

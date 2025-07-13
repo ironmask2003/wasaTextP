@@ -49,9 +49,12 @@ export default {
     // Funzione utilizzata per la ricerca di utenti da aggiungere al gruppo
     async filterUsers() {
       this.errorMsg = "";
-      this.filteredUsers = this.users;
 
-      if (this.searchText.length > 0) {
+      if (this.searchText.length >= 0) {
+        if (this.searchText.length == 0){
+          this.filteredUsers = [];
+          return
+        }
         if (this.searchText.length > 16 || !this.usernameValidation.test(this.searchText)) {
           this.errorMsg = "Invalid username, it can contain only letters and numbers for a maximum of 16 characters.";
           this.filteredUsers = [];
@@ -68,7 +71,10 @@ export default {
               this.filteredUsers = [];
               return;
             }
-            this.filteredUsers = response.data;
+            if (this.filteredUsers != response.data) {
+              this.filteredUsers = response.data;            
+              this.filteredUsers = this.filteredUsers.filter(user => user.username !== this.owner);
+            }
           } catch (e) {
             this.errorMsg = e.toString();
             this.filteredUsers = [];
@@ -107,7 +113,7 @@ export default {
     // Seleziona l'utente da aggiungere alla lista degli utenti del gruppo
     selectUser(user) {
       // Controlla se l'utente è già nella lista
-      if (!this.selectedUsers.find(u => u.username === user.username)) {
+      if (!this.selectedUsers.find(u => u.username === user.username) && this.owner != user.username) {
         this.selectedUsers.push(user); // Aggiungi utente selezionato
       }
     },
@@ -154,12 +160,12 @@ export default {
                 <input type="text" v-model="searchText" placeholder="Search" />
               </div>
               <p></p>
-              <div class="btn-group me-2">
-                <button class="btn btn-sm btn-outline-primary" @click="createGroup">Create Group</button>
+              <div>
+                <button class="btn btn-primary btn-update" @click="createGroup">Create Group</button>
               </div>
 
               <!-- Risultati della ricerca -->
-              <div class="search-results">
+              <div class="search-results" v-if="filteredUsers">
                 <div v-for="user in filteredUsers" :key="user.userId" @click="selectUser(user)" class="user">
                   <p>{{ user.username }}</p>
                 </div>
@@ -168,7 +174,7 @@ export default {
               <!-- Lista di utenti selezionati -->
               <div class="selected-users">
                 <h4>Selected Users:</h4>
-                <span class="selected-user">{{ owner }}</span>
+                <span class="selected-user">You</span>
                 <div v-for="user in selectedUsers" :key="user.userId" class="selected-user">
                   <span>{{ user.username }}</span>
                   <button v-if="user.username !== owner" @click="removeUser(user.username)">Remove</button>
@@ -203,11 +209,30 @@ export default {
 }
 
 .selected-user button {
-  background: red;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
   color: white;
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-update {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    border: none;
+    color: white;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1; /* Occupa lo spazio rimanente */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-height: 50px; /* Stessa altezza del attachment-button */
 }
 </style>

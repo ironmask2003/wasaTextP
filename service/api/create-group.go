@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"wasa.project/service/api/reqcontext"
 	"wasa.project/service/api/structs"
@@ -162,6 +163,17 @@ func (rt *_router) createGroup(w http.ResponseWriter, r *http.Request, ps httpro
 	if err := json.NewEncoder(w).Encode(res); err != nil {
 		InternalServerError(w, err, "Error encoding response", ctx)
 		return
+	} else {
+		rt.wsConnMutex.RLock()
+		for _, conn := range rt.wsConnMap {
+			message := map[string]interface{}{
+				"message": "Group created",
+				"users":   user,
+			}
+			jsonData, _ := json.Marshal(message)
+			conn.WriteMessage(websocket.TextMessage, jsonData)
+		}
+		rt.wsConnMutex.RUnlock()
 	}
 
 }

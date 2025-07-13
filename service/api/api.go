@@ -39,7 +39,9 @@ package api
 import (
 	"errors"
 	"net/http"
+	"sync"
 
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"github.com/sirupsen/logrus"
 	"wasa.project/service/database"
@@ -79,10 +81,24 @@ func New(cfg Config) (Router, error) {
 	router.RedirectTrailingSlash = false
 	router.RedirectFixedPath = false
 
+	// Configurazione WebSocket
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			// Permetti connessioni da qualsiasi origine (in produzione dovresti essere più restrittivo)
+			return true
+		},
+	}
+
+	wsConnMap := make(map[string]*websocket.Conn)
+	wsConnMutex := &sync.RWMutex{} // protezione concurrent access
+
 	return &_router{
-		router:     router,
-		baseLogger: cfg.Logger,
-		db:         cfg.Database,
+		router:      router,
+		baseLogger:  cfg.Logger,
+		db:          cfg.Database,
+		upgrader:    upgrader,
+		wsConnMap:   wsConnMap,
+		wsConnMutex: wsConnMutex,
 	}, nil
 }
 
@@ -92,6 +108,10 @@ type _router struct {
 	// baseLogger is a logger for non-requests contexts, like goroutines or background tasks not started by a request.
 	// Use context logger if available (e.g., in requests) instead of this logger.
 	baseLogger logrus.FieldLogger
+
+	upgrader    websocket.Upgrader
+	wsConnMap   map[string]*websocket.Conn
+	wsConnMutex *sync.RWMutex
 
 	db database.AppDatabase
 }

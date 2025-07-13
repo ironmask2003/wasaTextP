@@ -9,6 +9,8 @@ func (rt *_router) Handler() http.Handler {
 
 	// User routes
 	//
+	// -- Web socket connection -- //
+	rt.router.GET("/ws", rt.wrap(rt.handleWebSocket, false))
 	// -- Do Login -- //
 	rt.router.POST("/session", rt.wrap(rt.doLogin, false))
 	//

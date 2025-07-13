@@ -65,7 +65,12 @@ export default {
               this.filteredUsers = [];
               return;
             }
-            this.filteredUsers = response.data;
+
+            if (this.filteredUsers != response.data) {
+              this.filteredUsers = response.data;            
+              this.filteredUsers = this.filteredUsers.filter(user => user.username !== this.owner);
+            }
+            
           } catch (e) {
             this.errorMsg = e.toString();
             this.filteredUsers = [];
@@ -147,7 +152,7 @@ export default {
               </div>
 
               <!-- Risultati della ricerca -->
-              <div class="search-results">
+              <div class="search-results" v-if="filteredUsers">
                 <div v-for="user in filteredUsers" :key="user.userId" @click="selectUser(user)" class="user">
                   <p v-if="user.username !== owner">{{ user.username }}</p>
                 </div>
@@ -187,14 +192,5 @@ export default {
 .selected-user span {
   font-size: 14px;
   font-weight: bold;
-}
-
-.selected-user button {
-  background: red;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
 }
 </style>
